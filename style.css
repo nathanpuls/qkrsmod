@@ -1,5 +1,6 @@
 :root {
-  --white: #ffa3a3;
+  --bg: rgba(244, 211, 94, 0.25);
+  --white: #FFFFFF;
   --black: #111111;
   --primary: #4e4e4e;
   --light-gray: #ccc;
@@ -7,6 +8,7 @@
   --accent: #FFD166;
   --font-size: 18px;
   --icon-size: 24px;
+  --search: var(--white);
   
 }
 
@@ -15,7 +17,7 @@ html, body {
   padding: 0;
   height: 100%;
   font-family: 'Poppins', sans-serif;
-  background: var(--white);
+  background: var(--bg);
   color: var(--black);
   
   /* --- ADD THIS LINE TO PREVENT HORIZONTAL SCROLLING --- */
@@ -39,7 +41,7 @@ html, body {
   width: 90%;
   max-width: 400px;
   z-index: 20;
-  background: var(--white);
+  background: var(--search);
   border-radius: 8px;
   
   /* FIXED: Reduced padding from 10px to 8px and simplified */
@@ -60,7 +62,7 @@ html, body {
   flex-grow: 1; /* Input takes up all available space */
   border: none;
   outline: none;
-  background: var(--white);
+  background: var(--search);
   color: var(--black);
 }
 
@@ -157,7 +159,7 @@ a {
   padding: 0 20px;
   z-index: 1000;
   box-sizing: border-box;
-  background: var(--white);
+  background: #F4D35E;
 }
 
 #bottomBar button, #bottomBar img {
@@ -189,7 +191,7 @@ a {
   font-family: 'Poppins', sans-serif;
   border: 1px solid var(--light-gray);
   border-radius: 8px;
-  background: var(--white);
+  background: var(--bg);
   color: var(--primary);
   cursor: pointer;
 } */
@@ -202,7 +204,7 @@ a {
   right: -300px; 
   width: 300px;
   height: 100%;
-  background: var(--white);
+  background: var(--bg);
   box-shadow: -4px 0 12px rgba(0,0,0,0.25);
   display: flex;
   flex-direction: column;
@@ -250,7 +252,7 @@ a {
 .tooltip {
   position: absolute;
   background: var(--black);
-  color: var(--white);
+  color: var(--bg);
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 4px;
