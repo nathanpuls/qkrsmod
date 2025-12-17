@@ -51,36 +51,50 @@ document.addEventListener("modeChange", e => {
 // -------------------------
 // Search Bar
 // -------------------------
-function toggleClearButton() {
-  clearSearchBtn.style.display = topSearchInput.value.length > 0 ? 'flex' : 'none';
-}
 
-searchBtn.addEventListener("click", () => {
+function openSearch() {
   topSearchContainer.style.display = "flex";
   topSearchInput.focus();
   toggleClearButton();
+}
+
+function closeSearch() {
+  topSearchContainer.style.display = "none";
+  topSearchInput.value = "";
+  clearSearchBtn.style.display = "none";
+}
+
+function toggleClearButton() {
+  clearSearchBtn.style.display =
+    topSearchInput.value.length > 0 ? "flex" : "none";
+}
+
+// ---- Open search
+searchBtn.addEventListener("click", e => {
+  e.stopPropagation();
+  openSearch();
 });
 
+// ---- Prevent clicks inside search from closing it
+topSearchContainer.addEventListener("click", e => e.stopPropagation());
+topSearchInput.addEventListener("click", e => e.stopPropagation());
+clearSearchBtn.addEventListener("click", e => e.stopPropagation());
+
+// ---- Input handling
 topSearchInput.addEventListener("input", toggleClearButton);
 
-topSearchInput.addEventListener("keypress", e => {
+topSearchInput.addEventListener("keydown", e => {
   if (e.key === "Enter" && topSearchInput.value.trim()) {
     navigateTo(topSearchInput.value);
-    topSearchInput.value = "";
-    topSearchContainer.style.display = "none";
+    closeSearch();
+  }
+
+  if (e.key === "Escape") {
+    closeSearch();
   }
 });
 
-topSearchInput.addEventListener("blur", () => {
-  setTimeout(() => {
-    if (document.activeElement !== clearSearchBtn) {
-      topSearchInput.value = "";
-      topSearchContainer.style.display = "none";
-      clearSearchBtn.style.display = 'none';
-    }
-  }, 10);
-});
-
+// ---- Clear button
 clearSearchBtn.addEventListener("mousedown", e => e.preventDefault());
 clearSearchBtn.addEventListener("click", () => {
   topSearchInput.value = "";
@@ -88,34 +102,17 @@ clearSearchBtn.addEventListener("click", () => {
   toggleClearButton();
 });
 
-// -------------------------
-// Hide search if clicking/tapping outside
-// -------------------------
-document.addEventListener("click", e => {
-  const target = e.target;
-
-  // If search is open
-  const searchOpen = topSearchContainer.style.display === "flex";
-
-  if (searchOpen && target !== topSearchInput && target !== searchBtn && target !== clearSearchBtn && !topSearchContainer.contains(target)) {
-    topSearchContainer.style.display = "none";
-    topSearchInput.value = "";
-    clearSearchBtn.style.display = "none";
+// ---- Click/tap outside to close (desktop + mobile)
+document.addEventListener("pointerdown", e => {
+  if (
+    topSearchContainer.style.display === "flex" &&
+    !topSearchContainer.contains(e.target) &&
+    e.target !== searchBtn
+  ) {
+    closeSearch();
   }
 });
 
-// Optional: also handle touch events for mobile
-document.addEventListener("touchstart", e => {
-  const target = e.target;
-
-  const searchOpen = topSearchContainer.style.display === "flex";
-
-  if (searchOpen && target !== topSearchInput && target !== searchBtn && target !== clearSearchBtn && !topSearchContainer.contains(target)) {
-    topSearchContainer.style.display = "none";
-    topSearchInput.value = "";
-    clearSearchBtn.style.display = "none";
-  }
-});
 
 
 // -------------------------
