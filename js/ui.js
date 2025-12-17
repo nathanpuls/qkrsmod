@@ -32,6 +32,11 @@ const confirmNo = document.getElementById("confirmNo");
 const sideViewBtn = document.getElementById("sideViewBtn");
 // const sideHideMenuBtn = document.getElementById("sideHideMenuBtn");
 
+const isTouchDevice =
+  window.matchMedia("(pointer: coarse)").matches ||
+  "ontouchstart" in window;
+
+
 const toggleModeBtn = document.getElementById("toggleModeBtn");
 
 toggleModeBtn.addEventListener("click", () => {
@@ -217,6 +222,26 @@ function updateViewIcon() {
 // -------------------------
 // sideHideMenuBtn.addEventListener("click", () => sideMenu.classList.remove("open"));
 
+if (editor) {
+  editor.addEventListener("blur", () => {
+    // Only auto-exit on mobile/touch devices
+    if (!isTouchDevice) return;
+
+    // Only if currently editing
+    if (currentMode !== "edit") return;
+
+    // Small delay prevents accidental exits during taps / scroll
+    setTimeout(() => {
+      // If focus did NOT move to another input, exit edit mode
+      const activeTag = document.activeElement?.tagName;
+      const stillTyping = ["INPUT", "TEXTAREA"].includes(activeTag);
+
+      if (!stillTyping) {
+        toggleViewEdit(); // back to view mode
+      }
+    }, 150);
+  });
+}
 
 
 // -------------------------
