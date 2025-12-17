@@ -1,4 +1,5 @@
 :root {
+  --duck: #FFB347;
   --bg: var(--white);
   --white: #FFFFFF;
   --black: #111111;
@@ -6,11 +7,12 @@
   --light-gray: #ccc;
   --dark-background: rgba(17, 17, 17, 0.95);
   --accent: #ffc02d;
-  --icon: var(--black);
+  --icon: var(--duck);
   --font-size: 18px;
   --icon-size: 24px;
   --search: var(--white);
   --bottom-bar: var(--white);
+  --underline: var(--duck);
   
 }
 
@@ -127,18 +129,19 @@ html, body {
 }
 
 a {
-  color: var(--black);
+  color: var(--duck);
   text-decoration: underline;
-  text-decoration-color: var(--primary);
+  text-decoration-color: orange;
+  /* text-decoration-color: var(--underline); */
   /* text-decoration-thickness: 1px; */
   /* text-underline-offset: 2px; */
 }
 
 /* Make links inside the viewer appear as plain underlined text (addresses) */
 #staticContentViewer a {
-  color: inherit;
+  /* color: inherit; */
   text-decoration: underline;
-  text-decoration-color: var(--primary);
+  /* text-decoration-color: var(--primary); */
   text-decoration-thickness: 1.2px;
   text-underline-offset: 2px;
   /* Ensure underline doesn't skip over glyphs or whitespace */
