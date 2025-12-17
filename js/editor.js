@@ -83,9 +83,9 @@ export function formatTextForView(text) {
     }
   );
 
-  // Converts e.g. "123 Main St", "118 E 27th St Unit A Houston TX 77008", or "1600 Amphitheatre Pkwy, Mountain View" into a Google Maps search link
+  // Converts addresses into a Google Maps search link
   escaped = escaped.replace(
-    /\b(\d{1,5}\s+[A-Za-z0-9][A-Za-z0-9\.\-]*(?:\s+(?!Unit\b|Apt\b|Suite\b|Ste\b|#\b|Floor\b|Fl\b)[A-Za-z0-9\.\-]+){0,6}\s+(?:St(?:reet)?|Ave(?:nue)?|Rd(?:oad)?|Blvd|Boulevard|Ln|Lane|Dr|Drive|Ct|Court|Cir|Circle|Hwy|Highway|Pkwy|Way|Terrace|Ter|Pl|Place|(?:US|I|SR|Rte|Route)(?:\s*-?\s*\d{1,5})|[A-Za-z]{2,6}-\d{1,5})(?:\s+(?:Unit|Apt|Suite|Ste|#|Floor|Fl)\b[^<>\n,]{0,40})?(?:\s*(?:,|<br\s*\/?>)\s*[A-Za-z][A-Za-z\s\.\-]{0,60}(?:\s*(?:,|<br\s*\/?>)\s*(?:[A-Za-z]{2}|[A-Za-z][A-Za-z\s\.]{0,40}))?(?:\s+\d{5}(?:-\d{4})?)?)?)(?=\s|<br>|$)/gi,
+    /\b(\d{1,5}\s+[A-Za-z0-9][A-Za-z0-9\.\-]*(?:\s+(?!Unit\b|Apt\b|Suite\b|Ste\b|#\b|Floor\b|Fl\b)[A-Za-z0-9\.\-]+){0,6}\s+(?:St(?:reet)?|Ave(?:nue)?|Rd(?:oad)?|Blvd|Boulevard|Ln|Lane|Dr|Drive|Ct|Court|Cir|Circle|Hwy|Highway|Pkwy|Way|Terrace|Ter|Pl|Place|(?:US|I|SR|Rte|Route)(?:\s*-?\s*\d{1,5})|[A-Za-z]{2,6}-\d{1,5})(?:\s+(?:Unit, Apt, Suite, Ste, #, Floor, Fl)\b[^<>\n,]{0,40})?(?:\s*(?:,|\s*<br\s*\/?>)\s*[A-Za-z][A-Za-z\s\.\-]{0,60}(?:\s*(?:,\s*<br\s*\/?>)\s*(?:[A-Za-z]{2}|[A-Za-z][A-Za-z\s\.]{0,40}))?(?:\s+\d{5}(?:-\d{4})?)?)?)(?=\s|\n|$)/gi,
     match => {
       // Remove any stray <br> tags (if newlines were converted earlier) and trim trailing commas/spaces
       let cleaned = match.replace(/<br\s*\/?>/gi, ' ').replace(/[\s,]+$/,'');

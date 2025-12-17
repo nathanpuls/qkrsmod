@@ -89,6 +89,36 @@ clearSearchBtn.addEventListener("click", () => {
 });
 
 // -------------------------
+// Hide search if clicking/tapping outside
+// -------------------------
+document.addEventListener("click", e => {
+  const target = e.target;
+
+  // If search is open
+  const searchOpen = topSearchContainer.style.display === "flex";
+
+  if (searchOpen && target !== topSearchInput && target !== searchBtn && target !== clearSearchBtn && !topSearchContainer.contains(target)) {
+    topSearchContainer.style.display = "none";
+    topSearchInput.value = "";
+    clearSearchBtn.style.display = "none";
+  }
+});
+
+// Optional: also handle touch events for mobile
+document.addEventListener("touchstart", e => {
+  const target = e.target;
+
+  const searchOpen = topSearchContainer.style.display === "flex";
+
+  if (searchOpen && target !== topSearchInput && target !== searchBtn && target !== clearSearchBtn && !topSearchContainer.contains(target)) {
+    topSearchContainer.style.display = "none";
+    topSearchInput.value = "";
+    clearSearchBtn.style.display = "none";
+  }
+});
+
+
+// -------------------------
 // Navigation
 // -------------------------
 function navigateTo(note) {
