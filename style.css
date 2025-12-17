@@ -1,14 +1,16 @@
 :root {
-  --bg: rgba(244, 211, 94, 0.25);
+  --bg: var(--white);
   --white: #FFFFFF;
   --black: #111111;
   --primary: #4e4e4e;
   --light-gray: #ccc;
   --dark-background: rgba(17, 17, 17, 0.95);
-  --accent: #FFD166;
+  --accent: #ffc02d;
+  --icon: var(--black);
   --font-size: 18px;
   --icon-size: 24px;
   --search: var(--white);
+  --bottom-bar: var(--white);
   
 }
 
@@ -159,7 +161,7 @@ a {
   padding: 0 20px;
   z-index: 1000;
   box-sizing: border-box;
-  background: #F4D35E;
+  background: var(--bottom-bar);
 }
 
 #bottomBar button, #bottomBar img {
@@ -167,7 +169,7 @@ a {
   background: none;
   border: none;
   font-size: var(--icon-size);
-  color: var(--primary);
+  color: var(--icon);
 }
 
 #bottomBar img { height: 28px; }
