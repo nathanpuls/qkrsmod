@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qk.rs</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css">
+<link rel="stylesheet" href="/style.css">
+<link rel="apple-touch-icon" sizes="180x180" href="/x/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/x/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/x/favicon-16x16.png">
+<link rel="manifest" href="/x/site.webmanifest">
+</head>
+<body>
+
+<div id="topSearchContainer">
+  <input type="text" id="topSearchInput" placeholder="Type page name + Enter ⏎">
+  <button id="clearSearchBtn" style="display: none;">
+    <i class="ph-bold ph-x"></i>
+  </button>
+</div>
+
+<div id="staticContentViewer"></div>
+<textarea id="editor" placeholder="Write anything"></textarea>
+
+<div id="bottomBar">
+  <button id="searchBtn"><i class="ph-bold ph-magnifying-glass"></i></button>
+  <button id="copyBtn"><i class="ph-bold ph-copy-simple"></i></button>
+  <button id="copyLinkBtn"><i class="ph-bold ph-link-simple-horizontal"></i></button>
+  <!-- <button id="arrowBtn"><i class="ph-bold ph-arrow-right"></i></button> -->
+  <!-- <button id="homeBtn"><img src="/x/logo.png" alt="qk.rs"></button> -->
+  <button id="homeBtn"><i class="ph-bold ph-house-simple"></i></button>
+   <button id="qrToggleBtn"><i class="ph-bold ph-qr-code"></i></button>
+  <button id="toggleModeBtn">
+  <i class="ph-bold ph-pencil-simple"></i>
+</button>
+
+  <!-- <button id="menuBtn"><i class="ph-bold ph-dots-three"></i></button> -->
+</div>
+
+<!-- <div id="sideMenu">
+  <div id="pathDisplay"></div>
+  <button id="sideAboutBtn" class="menu-icon"><i class="ph-bold ph-info"></i>About</button>
+  <button id="sideShortcutsBtn" class="menu-icon"><i class="ph-bold ph-command"></i>Shortcuts</button>
+  <button id="sideEmailBtn" class="menu-icon"><i class="ph-bold ph-envelope-simple"></i>Email</button>
+  <button id="sideClearBtn" class="menu-icon"><i class="ph-bold ph-trash"></i>Clear Content</button>
+  <div id="clearConfirm" style="display:none; margin-top:10px;">
+    <button id="confirmYes" style="margin-left:5px; margin-top: -10px;">Yes</button>
+    <button id="confirmNo" style="margin-left:5px; margin-top: -10px;">No</button>
+  </div>
+  <button id="sideQrBtn" class="menu-icon"><i class="ph-bold ph-qr-code"></i>QR Code</button>
+  <div id="qrContainer" style="display:none; padding:20px;">
+    <canvas id="qrCanvas"></canvas>
+  </div>
+  
+  <button id="sideHideMenuBtn"><i class="ph-bold ph-x-circle"></i> Hide Menu</button>
+</div> -->
+
+<!-- QR Modal -->
+<div id="qrModal" style="display:none; position:fixed; inset:0; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:9999;">
+  <button id="qrModalClose" style="position:absolute; top:12px; right:12px; background:transparent; border:none; font-size:28px; color:#fff;">×</button>
+  <div style="position:relative; background:#fff; padding:28px 16px 16px; border-radius:8px; max-width:90%; text-align:center;">
+    <canvas id="qrCanvas" width="320" height="320" style="display:block; margin:0 auto; background:#fff;"></canvas>
+  </div>
+</div>
+
+<!-- Firebase scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+<!-- Modular JS -->
+<script type="module" src="/js/main.js"></script>
+<script type="module" src="/js/qr.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrious/dist/qrious.min.js"></script>
+</body>
+</html>

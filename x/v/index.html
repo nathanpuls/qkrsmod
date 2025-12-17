@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qk.rs · View</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css">
+
+<style>
+:root {
+  --white: #ffffff;
+  --black: #111111;
+  --primary: #4e4e4e;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  overflow: hidden;
+}
+
+#viewer {
+  height: calc(100vh - 60px);
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 24px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  box-sizing: border-box;
+}
+
+#viewer a {
+  color: var(--primary);
+  text-decoration: underline;
+  word-break: break-all;
+}
+
+#bottomBar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+  /* border-top: 1px solid #eee; */
+}
+
+#backBtn {
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  background: none;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#backBtn:hover {
+  opacity: 0.75;
+}
+</style>
+</head>
+<body>
+
+<div id="viewer">Loading…</div>
+
+<div id="bottomBar">
+  <button id="backBtn">
+    <i class="ph-bold ph-arrow-left"></i>
+    Back
+  </button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+<script>
+  // -----------------------------
+  // Firebase setup
+  // -----------------------------
+  firebase.initializeApp({
+    apiKey: "AIzaSyDFP5GAwTNqLyaySh_t_2j8NFiulHTeFy8",
+    authDomain: "fwdng-1d5f9.firebaseapp.com",
+    databaseURL: "https://fwdng-1d5f9.firebaseio.com",
+    projectId: "fwdng-1d5f9",
+    storageBucket: "fwdng-1d5f9.firebasestorage.app",
+    messagingSenderId: "250477002363",
+    appId: "1:250477002363:web:95a89409c8d5991a9aacde"
+  });
+
+  const db = firebase.database();
+  const viewer = document.getElementById("viewer");
+  const backBtn = document.getElementById("backBtn");
+
+  // -----------------------------
+  // Helpers
+  // -----------------------------
+  function normalizePath(path) {
+    return path
+      .toLowerCase()
+      .replace(/^\/+/, "")
+      .replace(/\/+$/, "")
+      .replace(/[.#$[\]]/g, "");
+  }
+
+function linkify(text) {
+  // Escape HTML
+  text = text.replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;");
+
+  // Master regex: protocol URLs, www., IPs, multi-level domains, emails, phones
+  const regex = /(\bhttps?:\/\/[^\s<]+)|(\bwww\.[^\s<]+)|(\b(?:\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/[^\s<]*)?)|(\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(?:\/[^\s<]*)?)|([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})|(\+?\d[\d\s().-]{7,}\d)/g;
+
+  return text.replace(regex, (match, p1, p2, p3, p4, p5, p6) => {
+    if (p1) return `<a href="${p1}" target="_blank" rel="noopener">${p1}</a>`;             // http/https
+    if (p2) return `<a href="https://${p2}" target="_blank" rel="noopener">${p2}</a>`;   // www.
+    if (p3) return `<a href="http://${p3}" target="_blank" rel="noopener">${p3}</a>`;    // IP
+    if (p4) return `<a href="https://${p4}" target="_blank" rel="noopener">${p4}</a>`;   // multi-level domain
+    if (p5) return `<a href="mailto:${p5}">${p5}</a>`;                                   // email
+    if (p6) return `<a href="tel:${p6}">${p6}</a>`;                                     // phone
+    return match;
+  }).replace(/\n/g, "<br>");
+}
+
+
+  // -----------------------------
+  // Read query param
+  // -----------------------------
+  const params = new URLSearchParams(window.location.search);
+  const rawT = params.get("t");
+
+  if (!rawT) {
+    viewer.innerHTML = "No content specified.";
+    backBtn.onclick = () => window.location.href = "/";
+    throw new Error("Missing ?t parameter");
+  }
+
+  const t = normalizePath(rawT);
+
+  document.title = t.split("/").pop() + " · View";
+
+  // -----------------------------
+  // Firebase read-only listener
+  // -----------------------------
+  const ref = db.ref("notes/" + t);
+
+  ref.on("value", snap => {
+    const val = snap.val() || "";
+    viewer.innerHTML = linkify(val);
+  });
+
+  // -----------------------------
+  // Back button
+  // -----------------------------
+  backBtn.addEventListener("click", () => {
+    window.location.href = "/" + t;
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+:root {
+  --white: #ffffff;
+  --black: #111111;
+  --primary: #4e4e4e;
+  --light-gray: #ccc;
+  --dark-background: rgba(17, 17, 17, 0.95);
+  --accent: #FFD166;
+  --font-size: 18px;
+  --icon-size: 24px;
+  
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Poppins', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  
+  /* --- ADD THIS LINE TO PREVENT HORIZONTAL SCROLLING --- */
+  overflow-x: hidden; 
+
+  /* Keep vertical hidden, as you manage scrolling on inner elements */
+  overflow-y: hidden;
+}
+
+
+
+
+#topSearchContainer {
+  display: none;
+  align-items: center;
+  gap: 5px; /* Space between input and button */
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 400px;
+  z-index: 20;
+  background: var(--white);
+  border-radius: 8px;
+  
+  /* FIXED: Reduced padding from 10px to 8px and simplified */
+  padding: 20px;
+  
+  box-sizing: border-box;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#topSearchInput {
+  font-family: 'Poppins', sans-serif;
+  font-size: var(--font-size);
+  
+  /* FIXED: Remove all internal padding and margin */
+  padding: 0; 
+  margin: 0;
+  
+  flex-grow: 1; /* Input takes up all available space */
+  border: none;
+  outline: none;
+  background: var(--white);
+  color: var(--black);
+}
+
+#clearSearchBtn {
+    background: none;
+    border: none;
+    
+    /* FIXED: Use a tighter size for the button area */
+    padding: 0 0; 
+    
+    cursor: pointer;
+    font-size: var(--font-size);
+    color: var(--light-gray);
+    flex-shrink: 0;
+    
+    /* Ensure the icon is vertically centered */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    
+    /* Ensure it doesn't try to inherit height from the container padding */
+    height: 1.2em; 
+}
+
+#clearSearchBtn:hover {
+    color: var(--primary); /* Darken on hover */
+}
+
+#topSearchInput::placeholder { color: var(--light-gray); }
+
+#editor,
+#staticContentViewer {
+  width: 100%;
+  height: calc(100vh - 60px); /* full viewport minus bottom bar */
+  font-family: 'Poppins', sans-serif;
+  font-size: var(--font-size);        /* same as editor */
+  line-height: 1.5;
+  white-space: pre-wrap;  /* preserve line breaks */
+  word-wrap: break-word;
+  padding: 10px;
+  box-sizing: border-box;
+  border: none;
+  outline: none;
+  display: none;          /* JS will toggle */
+  overflow-y: auto;       /* allow scrolling if content exceeds height */
+}
+
+#editor {
+  display: block;        /* editor shows first by default */
+  resize: none;          /* hide the browser resize grip */
+}
+
+/* Hide the little resizer/grip in WebKit browsers */
+#editor::-webkit-resizer {
+  display: none;
+}
+
+#staticContentViewer {
+  overflow-y: auto;      /* allow scrolling when content is long */
+}
+
+a {
+  color: var(--black);
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  /* text-decoration-thickness: 1px; */
+  /* text-underline-offset: 2px; */
+}
+
+/* Make links inside the viewer appear as plain underlined text (addresses) */
+#staticContentViewer a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--primary);
+  text-decoration-thickness: 1.2px;
+  text-underline-offset: 2px;
+  /* Ensure underline doesn't skip over glyphs or whitespace */
+  text-decoration-skip-ink: none;
+  -webkit-text-decoration-skip: none;
+  cursor: pointer;
+  word-break: break-word;
+}
+
+
+
+#bottomBar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+  box-sizing: border-box;
+  background: var(--white);
+}
+
+#bottomBar button, #bottomBar img {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: var(--icon-size);
+  color: var(--primary);
+}
+
+#bottomBar img { height: 28px; }
+
+
+
+/* #menuContent {
+  background: transparent;
+  padding: 30px;
+  width: 400px;
+  max-width: 90%;
+  text-align: center;
+}
+
+#menuContent button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin: 10px 0;
+  font-size: 18px;
+  font-family: 'Poppins', sans-serif;
+  border: 1px solid var(--light-gray);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--primary);
+  cursor: pointer;
+} */
+
+/* #menuContent button:hover { background: #f7f7f7; }
+
+#sideMenu {
+  position: fixed;
+  top: 0;
+  right: -300px; 
+  width: 300px;
+  height: 100%;
+  background: var(--white);
+  box-shadow: -4px 0 12px rgba(0,0,0,0.25);
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 15px;
+  transition: right 0.3s ease, box-shadow 0.3s ease;
+  
+  z-index: 2000;
+  box-sizing: border-box;
+} */
+
+/* Side menu open */
+/* #sideMenu.open {
+  right: 0;
+} */
+
+/* Buttons inside side menu */
+/* #sideMenu button {
+  width: 100%;
+  padding: 12px 15px;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  border: none;
+  border-radius: 8px;
+  background: #f2f2f2;
+  color: var(--primary);
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s, transform 0.15s;
+} */
+
+/* #sideMenu button:hover {
+  background: #e0e0e0;
+  
+} */
+
+/* #sideMenu button:active {
+  background: #d6d6d6;
+  
+} */
+
+
+
+/* Tooltip style */
+.tooltip {
+  position: absolute;
+  background: var(--black);
+  color: var(--white);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+  z-index: 10000;
+}
+.tooltip.show {
+  opacity: 1;
+}
+
+#pathDisplay {
+  margin-top: 5px; 
+  padding: 0px 0px;
+  font-size: 16px;
+
+  text-align: center;
+  user-select: text;
+  word-break: break-all;
+}
+
+/* Removes the default browser focus outline on click or tab */
+button:focus,
+a:focus {
+  outline: none !important; /* Use !important if necessary to override defaults */
+  box-shadow: none !important; /* Also remove any focus box-shadow that might be present */
+}
+
+/* .menu-icon {
+    display: flex;               
+    align-items: center;         
+    justify-content: center;     
+    gap: 8px;                    
+    width: 100%;                 
+    padding: 12px 15px;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+    border: none;
+    border-radius: 8px;
+    background: #f2f2f2;
+    color: var(--primary);
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+} */
+
+/* .menu-icon i {
+    font-size: 18px;            
+} */
+
+
+#homeBtn {
+  /* Remove the tiny width restriction */
+  width: auto; 
+  /* Ensure the button doesn't affect the image sizing */
+  padding: 0; 
+  /* You may also want to ensure it has the same button styling as the others: */
+  background: none;
+  border: none;
+}
+
+#qrContainer {
+  display: flex;
+  justify-content: center;   /* horizontally center */
+  align-items: center;       /* vertically center if needed */
+  margin: 0 auto;            /* center container itself if needed */
+  padding: 20px;
+  width: 100%;               /* make container full width */
+}
+
+#qrCanvas {
+  display: block;            /* ensure canvas is block-level */
+  margin: 0 auto;
+  margin-top: -20px;
+  margin-bottom: -20px;
+  margin-left: 50px;             /* center inside container */
+  width: 300px;
+  height: 300px;
+}
+
+
