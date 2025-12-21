@@ -21,17 +21,17 @@
     text-align: center;
   }
 
-  .container { max-width: 500px; width: 90%; }
+  .container { max-width: 1000px; width: 100%; }
 
   .title-container {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 10px;
-    gap: 10px;
+    gap: 5px;
   }
 
-  .logo { width: 60px; height: 60px; cursor: pointer; }
+  .logo { width: 50px; height: 50px; cursor: pointer; }
 
   h1 { font-weight: 500; font-size: 2rem; color: var(--primary); }
 
@@ -44,17 +44,17 @@
     padding: 14px 18px;
     font-size: 1.2rem;
     border-radius: 12px;
-    border: 2px solid var(--light-gray);
+    border: 1px solid var(--black);
     outline: none;
     transition: border-color 0.2s;
     font-family: 'Poppins', sans-serif;
   }
 
-  input[type="text"]:focus { border-color: var(--brand); }
+  input[type="text"]:focus { border-color: none; }
 
-  .hint { font-size: 0.9rem; color: var(--light-gray); margin-top: 50px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .hint { font-size: 0.9rem; color: var(--black); margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
 
-  .hint a { color: inherit; text-decoration: none; cursor: pointer; padding: 10px 15px; border-radius: 8px; }
+  .hint a { color: inherit; text-decoration: underline; cursor: pointer; padding: 10px 15px; border-radius: 8px; }
   .hint a:hover { text-decoration: underline; }
 
 </style>
@@ -66,10 +66,10 @@
     <img src="../logo.png" alt="duck" class="logo">
     <h1>qk.rs</h1>
   </div>
-  <p class="description">Share text in real time with a simple link.</p>
+  <!-- <p class="description">Share text in real time with a simple link.</p> -->
 
   <form id="pageForm">
-    <input type="text" id="pageInput" placeholder="Type page name + Enter ⏎" autofocus>
+    <input type="text" id="pageInput" placeholder="Type page name + Enter ⏎" autofocus autocomplete="off">
     <p class="hint">
       <a href="/x/about">About</a>
       <a href="/x/shortcuts">Shortcuts</a>
@@ -96,7 +96,7 @@
 
   // home click
   logo.addEventListener('click', () => {
-    window.location.href = window.location.origin + '/x/';
+    window.location.href = window.location.origin + '/x/home';
   });
 
   // random page click

@@ -4,10 +4,11 @@
   --bg: var(--white);
   --white: #FFFFFF;
   --black: #111111;
-  --primary: #4e4e4e;
+  --primary: var(--black);
   --light-gray: #ccc;
   --dark-background: rgba(17, 17, 17, 0.95);
-  --brand: #ffc02d;
+  --brandcolor: #ffc02d;
+  --brand: var(--black)
   --icon: var(--duck);
   --font-size: 20px;
   --icon-size: 24px;
