@@ -132,9 +132,9 @@ html, body {
 }
 
 a {
-  color: var(--duck);
+  color: var(--primary);
   text-decoration: underline;
-  text-decoration-color: orange;
+  text-decoration-color: var(--primary);
   /* text-decoration-color: var(--underline); */
   /* text-decoration-thickness: 1px; */
   /* text-underline-offset: 2px; */
