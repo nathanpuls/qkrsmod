@@ -10,7 +10,7 @@
   --brandcolor: #ffc02d;
   --brand: var(--black)
   --icon: var(--duck);
-  --font-size: 20px;
+  --font-size: 18px;
   --icon-size: 24px;
   --search: var(--white);
   --bottom-bar: var(--white);
@@ -168,6 +168,7 @@ a {
   z-index: 1000;
   box-sizing: border-box;
   background: var(--bottom-bar);
+  border-top: 1px solid rgb(235, 235, 235);
 }
 
 #bottomBar button, #bottomBar img {
