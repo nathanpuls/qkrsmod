@@ -1,5 +1,6 @@
 :root {
-  --duck: #FFB347;
+  --duckcolor: #FFB347;
+  --duck: var(--black);
   --bg: var(--white);
   --white: #FFFFFF;
   --black: #111111;
@@ -8,7 +9,7 @@
   --dark-background: rgba(17, 17, 17, 0.95);
   --brand: #ffc02d;
   --icon: var(--duck);
-  --font-size: 18px;
+  --font-size: 20px;
   --icon-size: 24px;
   --search: var(--white);
   --bottom-bar: var(--white);
@@ -100,6 +101,7 @@ html, body {
 #editor,
 #staticContentViewer {
   width: 100%;
+  margin: 10px;
   height: calc(100vh - 60px); /* full viewport minus bottom bar */
   font-family: 'Poppins', sans-serif;
   font-size: var(--font-size);        /* same as editor */
