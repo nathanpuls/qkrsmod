@@ -325,3 +325,19 @@ window.addEventListener("popstate", () => {
   topSearchInput.value = "";
   setupFirebaseListener();
 });
+
+// Add this under the "View/Edit Toggle" or "DOM Elements" section
+const staticViewer = document.getElementById("staticContentViewer");
+
+if (staticViewer) {
+  staticViewer.addEventListener("click", (e) => {
+    // Check if the click was on a link or inside a link
+    const isLink = e.target.closest("a");
+
+    if (!isLink) {
+      import('./editor.js').then(mod => {
+        mod.toggleMode('edit');
+      });
+    }
+  });
+}
