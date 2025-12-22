@@ -17,6 +17,17 @@ export const editor = document.getElementById("editor");
 export const staticViewer = document.getElementById("staticContentViewer");
 export let currentMode = 'view'; // default landing mode
 
+// Auto-resize the editor textarea so the page scrolls instead of the textarea
+function autoResizeEditor() {
+  if (!editor) return;
+  // reset height to allow shrink when content is reduced
+  editor.style.height = 'auto';
+  try {
+    const newHeight = Math.max(editor.scrollHeight, 120); // min height
+    editor.style.height = newHeight + 'px';
+  } catch (e) { /* ignore */ }
+}
+
 // -------------------------
 // Mode Toggle
 // -------------------------
@@ -44,6 +55,7 @@ export function toggleMode(mode) {
     editor.focus();
     editor.selectionStart = 0;
     editor.selectionEnd = 0;
+    try { autoResizeEditor(); } catch (e) { /* ignore */ }
   }
 
   document.dispatchEvent(new CustomEvent("modeChange", { detail: { mode: currentMode } }));
@@ -85,6 +97,8 @@ export function setupFirebaseListener() {
       const hasContent = typeof val === 'string' && val.trim().length > 0;
       if (hasContent) {
         editor.value = val;
+        // resize editor to fit loaded content so the page scrolls rather than the textarea
+        try { autoResizeEditor(); } catch (e) { /* ignore */ }
         try {
           staticViewer.innerHTML = formatTextForView(val);
         } catch (e) {
@@ -98,6 +112,7 @@ export function setupFirebaseListener() {
         toggleMode('view');
       } else {
         editor.value = val || '';
+        try { autoResizeEditor(); } catch (e) { }
         toggleMode('edit');
         setTimeout(() => {
           try { editor.focus(); editor.selectionStart = editor.selectionEnd = editor.value.length || 0; } catch (e) { }
@@ -109,6 +124,8 @@ export function setupFirebaseListener() {
     // Subsequent updates
     if (typeof val === "string" && editor.value !== val) {
       editor.value = val;
+      // resize editor to fit loaded content
+      try { autoResizeEditor(); } catch (e) { /* ignore */ }
       if (currentMode === 'view') {
         try {
           staticViewer.innerHTML = formatTextForView(val);
@@ -127,6 +144,7 @@ export function setupFirebaseListener() {
       }
     } else if (val === null) {
       editor.value = "";
+      try { autoResizeEditor(); } catch (e) { /* ignore */ }
       if (currentMode === 'view') {
         try {
           staticViewer.innerHTML = formatTextForView(editor.value);
@@ -149,11 +167,32 @@ export function setupFirebaseListener() {
 // Save on input & before unload
 // -------------------------
 editor.addEventListener("input", () => {
+  // Keep the textarea auto-sized so the page scrolls rather than the textarea
+  autoResizeEditor();
+
   if (currentMode === 'view') return;
   clearTimeout(typingTimeout);
   typingTimeout = setTimeout(() => {
     if (currentRef) set(currentRef, editor.value);
   }, 200);
+});
+
+// When the editor loses focus on mobile (keyboard hidden) we should switch back to view mode.
+// If the focus moves to another input/textarea/contentEditable (e.g., search input), don't switch.
+editor.addEventListener('blur', () => {
+  setTimeout(() => {
+    if (currentMode !== 'edit') return;
+    const ae = document.activeElement;
+    if (ae) {
+      const tag = ae.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || ae.isContentEditable) return;
+      if (ae.id === 'templateSearchInput' || ae.id === 'topSearchInput') return;
+    }
+
+    // Persist immediately then switch to view
+    try { if (currentRef) set(currentRef, editor.value); } catch (e) { /* ignore */ }
+    toggleMode('view');
+  }, 0);
 });
 
 window.addEventListener("beforeunload", () => {

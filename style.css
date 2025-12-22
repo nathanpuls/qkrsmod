@@ -157,6 +157,8 @@ body {
   /* editor shows first by default */
   resize: none;
   /* hide the browser resize grip */
+  overflow-y: hidden;
+  /* prevent internal textarea scrollbar; we auto-resize it */
 }
 
 /* Hide the little resizer/grip in WebKit browsers */
