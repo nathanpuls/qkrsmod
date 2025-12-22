@@ -8,6 +8,7 @@ import { formatTextForView } from './regex.js';
 import { db } from './firebase.js';
 import { ref as dbRef, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 import { setupVariableLinks } from './variablelinks.js';
+import { setupVariables, teardownVariables } from './variables.js';
 
 // -------------------------
 // DOM Elements
@@ -28,12 +29,16 @@ export function toggleMode(mode) {
     staticViewer.innerHTML = formatTextForView(editor.value);
 
     setupVariableLinks();
+    try { setupVariables(); } catch (e) { console.error('[editor] setupVariables error', e); }
 
     staticViewer.scrollTop = 0;
     staticViewer.scrollLeft = 0;
   } else {
     editor.style.display = "block";
     staticViewer.style.display = "none";
+    // When switching out of view mode, teardown variable listeners/placeholders
+    try { teardownVariables(); } catch (e) { /* ignore */ }
+
     editor.scrollTop = 0;
     editor.scrollLeft = 0;
     editor.focus();
@@ -82,8 +87,9 @@ export function setupFirebaseListener() {
           staticViewer.textContent = val;
         }
         try {
-          // Ensure variable links are set up after content is injected
+          // Ensure variable links and variable substitutions are set up after content is injected
           setupVariableLinks();
+          try { setupVariables(); } catch (e) { console.error('[editor] setupVariables error', e); }
         } catch (e) {
           console.error('[editor] setupVariableLinks error', e);
         }
@@ -99,6 +105,7 @@ export function setupFirebaseListener() {
         }
         try {
           setupVariableLinks();
+          try { setupVariables(); } catch (e) { console.error('[editor] setupVariables error', e); }
         } catch (e) {
           console.error('[editor] setupVariableLinks error', e);
         }

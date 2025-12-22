@@ -192,6 +192,16 @@ a {
   cursor: default;
 }
 
+/* Variable substitution placeholders and resolved content */
+#staticContentViewer .variable-placeholder {
+  color: var(--light-gray);
+  cursor: default;
+}
+
+#staticContentViewer .variable-resolved {
+  color: var(--primary);
+}
+
 
 
 #bottomBar {
