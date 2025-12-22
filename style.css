@@ -26,12 +26,34 @@ body {
   background: var(--bg);
   color: var(--black);
 
-  /* --- ADD THIS LINE TO PREVENT HORIZONTAL SCROLLING --- */
+  /* --- Prevent horizontal scrolling --- */
   overflow-x: hidden;
 
-  /* Keep vertical hidden, as you manage scrolling on inner elements */
-  overflow-y: hidden;
+  /* Allow vertical scrolling on the page (so the whole page scrolls instead of inner panels) */
+  overflow-y: auto;
+
+  /* Reserve space at the bottom so content isn't obscured by the fixed bottom bar */
+  padding-bottom: 80px;
 }
+
+#editorWrapper {
+  max-width: 800px;
+  /* max line width */
+  margin: 0 auto;
+  /* center horizontally */
+  width: 100%;
+  /* allow it to shrink on smaller screens */
+  margin-top: 30px;
+}
+
+#editor,
+#staticContentViewer {
+  width: 100%;
+  /* full width of wrapper, not screen */
+  box-sizing: border-box;
+
+}
+
 
 
 
@@ -106,10 +128,12 @@ body {
 
 #editor,
 #staticContentViewer {
-  width: 100%;
-  margin: 10px;
-  height: calc(100vh - 60px);
-  /* full viewport minus bottom bar */
+  /* By default use almost full width but leave a small margin so it can be centered on larger viewports */
+  width: calc(100% - 20px);
+  margin: 10px auto;
+  height: auto;
+  /* allow the page to scroll rather than internal panels */
+  min-height: calc(100vh - 180px);
   font-family: 'Poppins', sans-serif;
   font-size: var(--font-size);
   /* same as editor */
@@ -117,14 +141,15 @@ body {
   white-space: pre-wrap;
   /* preserve line breaks */
   word-wrap: break-word;
-  padding: 10px;
+  padding: 10px 10px 90px;
+  /* bottom padding so content isn't hidden by fixed bottom bar */
   box-sizing: border-box;
   border: none;
   outline: none;
   display: none;
   /* JS will toggle */
-  overflow-y: auto;
-  /* allow scrolling if content exceeds height */
+  overflow-y: visible;
+  /* allow page to scroll instead */
 }
 
 #editor {
@@ -140,8 +165,8 @@ body {
 }
 
 #staticContentViewer {
-  overflow-y: auto;
-  /* allow scrolling when content is long */
+  overflow-y: visible;
+  /* allow the page (body) to scroll rather than this element */
 }
 
 a {
@@ -206,9 +231,10 @@ a {
 
 #bottomBar {
   position: fixed;
-  bottom: 0;
+  bottom: 0px;
+  left: 0;
   width: 100%;
-  height: 60px;
+  height: 100px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -217,6 +243,34 @@ a {
   box-sizing: border-box;
   background: var(--bottom-bar);
   /* border-top: 1px solid rgb(235, 235, 235); */
+}
+
+/* Desktop: constrain and center editor/viewer and bottom bar */
+@media (min-width: 700px) {
+
+  #editor,
+  #staticContentViewer {
+    width: 90%;
+    max-width: 900px;
+    margin: 10px auto;
+  }
+
+  #bottomBar {
+    width: 90%;
+    max-width: 900px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 8px 8px 0 0;
+
+  }
+
+  /* Keep the template search aligned with the constrained layout */
+  #templateSearchContainer {
+    width: 90%;
+    max-width: 400px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 #bottomBar button,

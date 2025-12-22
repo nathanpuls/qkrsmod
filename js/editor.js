@@ -73,9 +73,40 @@ export function setupFirebaseListener() {
   const firebasePath = "notes/" + path.toLowerCase();
   currentRef = dbRef(db, firebasePath);
 
+  // Track initial load so we can decide whether to go to edit mode when there's no content
+  let initialLoad = true;
+
   onValue(currentRef, snapshot => {
     const val = snapshot.val();
     console.log('[editor] onValue snapshot', { val });
+
+    if (initialLoad) {
+      initialLoad = false;
+      const hasContent = typeof val === 'string' && val.trim().length > 0;
+      if (hasContent) {
+        editor.value = val;
+        try {
+          staticViewer.innerHTML = formatTextForView(val);
+        } catch (e) {
+          console.error('[editor] formatTextForView error', e);
+          staticViewer.textContent = val;
+        }
+        try {
+          setupVariableLinks();
+          try { setupVariables(); } catch (e) { console.error('[editor] setupVariables error', e); }
+        } catch (e) { console.error('[editor] setupVariableLinks error', e); }
+        toggleMode('view');
+      } else {
+        editor.value = val || '';
+        toggleMode('edit');
+        setTimeout(() => {
+          try { editor.focus(); editor.selectionStart = editor.selectionEnd = editor.value.length || 0; } catch (e) { }
+        }, 0);
+      }
+      return;
+    }
+
+    // Subsequent updates
     if (typeof val === "string" && editor.value !== val) {
       editor.value = val;
       if (currentMode === 'view') {
@@ -112,8 +143,6 @@ export function setupFirebaseListener() {
       }
     }
   });
-  // Ensure initial mode is view when listener attaches
-  toggleMode('view');
 }
 
 // -------------------------
