@@ -66,7 +66,7 @@ export function setupShortcuts({ openSearch, editor, staticViewer, copyBtn, copy
         const iconEl = toggleModeBtn.querySelector('i');
         if (!iconEl) return;
         if (mode === 'edit') {
-            iconEl.className = 'ph-bold ph-eye';
+            iconEl.className = 'ph-bold ph-check-fat';
             toggleModeBtn.title = 'View (Esc)';
         } else {
             iconEl.className = 'ph-bold ph-pencil-simple';
