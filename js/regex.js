@@ -44,6 +44,13 @@ export function formatTextForView(text) {
         __VAR_TOKEN_MAP = null;
     }
 
+    // Hashtags: convert #tag into internal hashtag pages (e.g., /hashtag/tag)
+    // Only match hashtags as word tokens (letters/digits/-/_), not part of a larger word
+    escaped = escaped.replace(/(^|[\s>])#([A-Za-z0-9\-_]+)(?=\s|<br>|$|[.,!?:;])/g, (m, prefix, tag) => {
+        const t = tag.toLowerCase();
+        return `${prefix}<a href="/hashtag/${t}">#${tag}</a>`;
+    });
+
     // Slash-paths (e.g., /xmas or /foo/bar) -> internal links
     // Matches a leading slash and subsequent path segments, stops before whitespace, <br>, end, or punctuation
     escaped = escaped.replace(/(^|[\s>])(\/[A-Za-z0-9][A-Za-z0-9\/\-_]*)(?=\s|<br>|$|[.,!?:;])/g, (m, prefix, path) => {
