@@ -5,12 +5,126 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Hashtag</title>
-    <link rel="stylesheet" href="/style.css">
+    <style>
+  /* Import Poppins font */
+  @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+  body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Poppins', sans-serif;
+    background: #fff;
+    color: #111;
+    display: flex;
+    justify-content: center; /* center horizontally */
+  }
+
+  #page.container {
+    max-width: 540px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .title-container .logo {
+    width: 80px;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  h1#tagTitle {
+    margin: 0;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  #hashtagSearchContainer {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: #f9f9f9;
+    padding: 10px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    box-sizing: border-box;
+  }
+
+  #hashtagSearchContainer input {
+    flex-grow: 1;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+  }
+
+  #hashtagSearchContainer button {
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    background: #eee;
+    cursor: pointer;
+  }
+
+  #tagResults {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
+    list-style: none;
+  }
+
+  #tagResults ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#tagResults li a {
+  text-decoration: underline;
+  color: #111;
+  word-break: break-word;
+}
+
+
+  #tagResults a {
+    text-decoration: underline;
+    color: #111;
+    word-break: break-word;
+  }
+
+  p a {
+    margin-top: 20px;
+    display: inline-block;
+    text-decoration: none;
+    color: #111;
+  }
+</style>
+
 </head>
 
 <body>
     <div id="page" class="container">
-        <h1 id="tagTitle">#</h1>
+        <div class="title-container">
+            <img src="/x/logo.png" alt="duck" class="logo">
+            <!-- <h1 id="tagTitle">#</h1> -->
+        </div>
+
+       
+
         <div id="tagResults">Loading…</div>
         <p><a href="/">Back to home</a></p>
     </div>

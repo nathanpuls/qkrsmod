@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
 :root {
   --duckcolor: #FFB347;
   --duck: var(--black);
@@ -229,15 +231,22 @@ a {
   color: var(--primary);
 }
 
-/* Hashtag link styling */
-#staticContentViewer a[href^="/hashtag/"] {
+/* Hashtag link styling (supports /x/hashtag and /x/hashtag/?tag=...) */
+#staticContentViewer a[href*="/x/hashtag"] {
   color: var(--primary);
   font-weight: 600;
   text-decoration: none;
 }
 
-#staticContentViewer a[href^="/hashtag/"]:hover {
+#staticContentViewer a[href*="/x/hashtag"]:hover {
   text-decoration: underline;
+}
+
+/* Logo sizing (smaller duck on pages like /x/hashtag) */
+.logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
 /* Hashtag results page */
@@ -250,39 +259,98 @@ a {
 .tag-result {
   padding: 10px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .tag-result a {
   font-weight: 600;
   color: var(--primary);
-  text-decoration: none;
-}
+  text-decoration: underline;
 
-.tag-snippet {
-  color: #444;
-  margin-top: 6px;
-}
+  /* Hashtag page layout: center content and use Poppins */
+  #page.container {
+    max-width: 900px;
+    width: 90%;
+    margin: 40px auto;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    min-height: calc(100vh - 160px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .tag-snippet {
+    color: #444;
+    margin-top: 6px;
+  }
 
 
 
 
-#bottomBar {
-  position: fixed;
-  bottom: 0px;
-  left: 0;
-  width: 100%;
-  height: 80px;
+  #bottomBar {
+    position: fixed;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+
+  }
+
+  /* Hashtag page search styling (matches top search) */
+ #hashtagSearchContainer {
+  width: 90%;
+  max-width: 540px;
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  padding: 0 20px;
-  z-index: 1000;
+  gap: 8px;
+  justify-content: center;
+  background: var(--search);
+  padding: 12px 14px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
-  background: var(--bottom-bar);
-  /* border-top: 1px solid rgb(235, 235, 235); */
 }
 
-/* Desktop: constrain and center editor/viewer and bottom bar */
+  #tagSearchInput {
+    font-family: 'Poppins', sans-serif;
+    font-size: var(--font-size);
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--black);
+  }
+
+  #tagSearchInput::placeholder {
+    color: var(--light-gray);
+  }
+
+  #tagSearchClear {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--light-gray);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+
 @media (min-width: 700px) {
 
   #editor,
