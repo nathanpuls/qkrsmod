@@ -167,7 +167,7 @@ export function setupVariableLinks() {
             container = document.createElement('div');
             container.id = 'templateSearchContainer';
             container.innerHTML = `
-                <input id="templateSearchInput" placeholder="Search or type value and press Enter" aria-label="Template search input">
+                <input id="templateSearchInput" placeholder="Search or type value and press Enter" autocomplete="off" aria-label="Template search input">
                 <button id="templateSearchBtn" aria-label="Go">Go</button>
             `;
             document.body.appendChild(container);
