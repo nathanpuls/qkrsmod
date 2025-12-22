@@ -14,13 +14,13 @@ export function drawQR(text, size = 300) {
   img.crossOrigin = "anonymous";
   img.src = "https://api.qrserver.com/v1/create-qr-code/?size=" + size + "x" + size + "&data=" + encodeURIComponent(text);
   img.onload = () => {
-    ctx.clearRect(0,0,qrCanvas.width,qrCanvas.height);
+    ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
     ctx.drawImage(img, 0, 0, size, size);
   };
   img.onerror = () => {
-    ctx.clearRect(0,0,qrCanvas.width,qrCanvas.height);
+    ctx.clearRect(0, 0, qrCanvas.width, qrCanvas.height);
     ctx.fillStyle = "#eee";
-    ctx.fillRect(0,0,qrCanvas.width,qrCanvas.height);
+    ctx.fillRect(0, 0, qrCanvas.width, qrCanvas.height);
     ctx.fillStyle = "#333";
     ctx.fillText("QR load error", 10, 20);
   };
@@ -37,9 +37,15 @@ function closeModal() {
   qrModal.style.display = "none";
 }
 
+export function toggleQR() {
+  if (!qrModal) return;
+  if (qrModal.style.display === "flex") closeModal();
+  else openModal();
+}
+
 if (qrToggleBtn) {
   qrToggleBtn.addEventListener("click", () => {
-    openModal();
+    toggleQR();
   });
 }
 

@@ -167,6 +167,31 @@ a {
   word-break: break-word;
 }
 
+/* Style variable links (created dynamically) same as anchors */
+#staticContentViewer .variable-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1.2px;
+  text-underline-offset: 2px;
+  text-decoration-skip-ink: none;
+  -webkit-text-decoration-skip: none;
+  cursor: pointer;
+  color: var(--primary);
+}
+
+/* Temporary debug style for template anchors */
+/* #staticContentViewer .variable-template {
+  outline: 2px dashed rgba(255, 0, 0, 0.85);
+  padding: 0 4px;
+  border-radius: 3px;
+} */
+
+/* Candidate variable lines (protected before linkification) */
+#staticContentViewer .variable-candidate {
+  color: inherit;
+  text-decoration: none;
+  cursor: default;
+}
+
 
 
 #bottomBar {
@@ -366,4 +391,48 @@ a:focus {
   /* center inside container */
   width: 300px;
   height: 300px;
+}
+
+/* Template search UI above bottom bar */
+#templateSearchContainer {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 70px;
+  /* a bit above the bottom bar */
+  z-index: 1100;
+  display: none;
+  gap: 8px;
+  align-items: center;
+  background: var(--search);
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  min-width: 280px;
+  max-width: 680px;
+  width: calc(100% - 40px);
+  box-sizing: border-box;
+}
+
+#templateSearchContainer input {
+  flex: 1 1 auto;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  padding: 6px 8px;
+  background: transparent;
+}
+
+#templateSearchContainer button {
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  cursor: pointer;
+  font-weight: 600;
+  
+}
+
+#templateSearchContainer input,
+#templateSearchContainer button {
+  font-family: 'Poppins', sans-serif;
 }
