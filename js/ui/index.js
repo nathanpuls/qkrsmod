@@ -12,6 +12,15 @@ const copyLinkBtn = document.getElementById("copyLinkBtn");
 const editor = document.getElementById("editor");
 const staticViewer = document.getElementById("staticContentViewer");
 const toggleModeBtn = document.getElementById("toggleModeBtn");
+const homeBtn = document.getElementById("homeBtn");
+
+// Home button: navigate to the main home page
+if (homeBtn) {
+    homeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.location.href = '/x/home';
+    });
+}
 
 // Initialize modules
 const { openSearch } = setupSearch({ searchBtn, topSearchContainer, topSearchInput, clearSearchBtn });

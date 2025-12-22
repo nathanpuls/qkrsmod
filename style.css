@@ -402,37 +402,29 @@ a:focus {
   /* a bit above the bottom bar */
   z-index: 1100;
   display: none;
-  gap: 8px;
+  gap: 5px;
   align-items: center;
   background: var(--search);
-  padding: 8px 12px;
+  padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-  min-width: 280px;
-  max-width: 680px;
-  width: calc(100% - 40px);
+  width: 90%;
+  max-width: 400px;
   box-sizing: border-box;
 }
 
 #templateSearchContainer input {
-  flex: 1 1 auto;
+  font-family: 'Poppins', sans-serif;
+  font-size: var(--font-size);
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
   border: none;
   outline: none;
-  font-size: 16px;
-  padding: 6px 8px;
-  background: transparent;
+  background: var(--search);
+  color: var(--black);
 }
 
-#templateSearchContainer button {
-  background: none;
-  border: none;
-  padding: 6px 8px;
-  cursor: pointer;
-  font-weight: 600;
-  
-}
-
-#templateSearchContainer input,
-#templateSearchContainer button {
-  font-family: 'Poppins', sans-serif;
+#templateSearchContainer input::placeholder {
+  color: var(--light-gray);
 }

@@ -167,19 +167,21 @@ export function setupVariableLinks() {
             container = document.createElement('div');
             container.id = 'templateSearchContainer';
             container.innerHTML = `
-                <input id="templateSearchInput" placeholder="Search with $ variable link and press enter" autocomplete="off" aria-label="Template search input">
-                <button id="templateSearchBtn" aria-label="Go">Go</button>
+                <input id="templateSearchInput" placeholder="$ Variable name + Enter ⏎" autocomplete="off" aria-label="Template search input">
             `;
             document.body.appendChild(container);
 
             const input = container.querySelector('#templateSearchInput');
-            const btn = container.querySelector('#templateSearchBtn');
 
-            btn.addEventListener('click', () => doTemplateSearch(templateAnchor, input.value));
+            // Pressing Enter triggers the template search (same behavior as top search)
             input.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     doTemplateSearch(templateAnchor, input.value);
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    // Blur the input but keep the template search visible
+                    input.blur();
                 }
             });
         }
