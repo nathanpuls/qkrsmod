@@ -32,5 +32,23 @@ export function listenToNote(path, callback) {
 // Save data to a note path
 export function saveNote(path, value) {
   const noteRef = getNoteRef(path);
-  return set(noteRef, value);
+  // If value is a string, store as object with content and updatedAt
+  if (typeof value === 'string') {
+    return set(noteRef, {
+      content: value,
+      updatedAt: Date.now()
+    });
+  } else if (typeof value === 'object' && value !== null) {
+    // If value is already an object, add/update updatedAt
+    return set(noteRef, {
+      ...value,
+      updatedAt: Date.now()
+    });
+  } else {
+    // Fallback: store as object with updatedAt
+    return set(noteRef, {
+      value,
+      updatedAt: Date.now()
+    });
+  }
 }

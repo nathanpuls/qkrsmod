@@ -5,8 +5,8 @@
 
 import { getPath, isXPath } from './path.js';
 import { formatTextForView } from './regex.js';
-import { db } from './firebase.js';
-import { ref as dbRef, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+import { db, saveNote } from './firebase.js';
+import { ref as dbRef, onValue } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 import { setupVariableLinks } from './variablelinks.js';
 import { setupVariables, teardownVariables } from './variables.js';
 
@@ -89,21 +89,29 @@ export function setupFirebaseListener() {
   let initialLoad = true;
 
   onValue(currentRef, snapshot => {
-    const val = snapshot.val();
+    let val = snapshot.val();
     console.log('[editor] onValue snapshot', { val });
+
+    // Support both string and object note values
+    let content = '';
+    if (typeof val === 'string') {
+      content = val;
+    } else if (val && typeof val === 'object' && typeof val.content === 'string') {
+      content = val.content;
+    }
 
     if (initialLoad) {
       initialLoad = false;
-      const hasContent = typeof val === 'string' && val.trim().length > 0;
+      const hasContent = content.trim().length > 0;
       if (hasContent) {
-        editor.value = val;
+        editor.value = content;
         // resize editor to fit loaded content so the page scrolls rather than the textarea
         try { autoResizeEditor(); } catch (e) { /* ignore */ }
         try {
-          staticViewer.innerHTML = formatTextForView(val);
+          staticViewer.innerHTML = formatTextForView(content);
         } catch (e) {
           console.error('[editor] formatTextForView error', e);
-          staticViewer.textContent = val;
+          staticViewer.textContent = content;
         }
         try {
           setupVariableLinks();
@@ -111,7 +119,7 @@ export function setupFirebaseListener() {
         } catch (e) { console.error('[editor] setupVariableLinks error', e); }
         toggleMode('view');
       } else {
-        editor.value = val || '';
+        editor.value = content || '';
         try { autoResizeEditor(); } catch (e) { }
         toggleMode('edit');
         setTimeout(() => {
@@ -122,17 +130,17 @@ export function setupFirebaseListener() {
     }
 
     // Subsequent updates
-    if (typeof val === "string" && editor.value !== val) {
-      editor.value = val;
+    if (content !== editor.value) {
+      editor.value = content;
       // resize editor to fit loaded content
       try { autoResizeEditor(); } catch (e) { /* ignore */ }
       if (currentMode === 'view') {
         try {
-          staticViewer.innerHTML = formatTextForView(val);
+          staticViewer.innerHTML = formatTextForView(content);
         } catch (e) {
           console.error('[editor] formatTextForView error', e);
           // Fallback: escape minimal HTML and show raw text
-          staticViewer.textContent = val;
+          staticViewer.textContent = content;
         }
         try {
           // Ensure variable links and variable substitutions are set up after content is injected
@@ -173,7 +181,11 @@ editor.addEventListener("input", () => {
   if (currentMode === 'view') return;
   clearTimeout(typingTimeout);
   typingTimeout = setTimeout(() => {
-    if (currentRef) set(currentRef, editor.value);
+    if (currentRef) {
+      // Extract the path from currentRef
+      const path = currentRef._path.pieces_.slice(1).join('/');
+      saveNote(path, editor.value);
+    }
   }, 200);
 });
 
@@ -190,11 +202,19 @@ editor.addEventListener('blur', () => {
     }
 
     // Persist immediately then switch to view
-    try { if (currentRef) set(currentRef, editor.value); } catch (e) { /* ignore */ }
+    try {
+      if (currentRef) {
+        const path = currentRef._path.pieces_.slice(1).join('/');
+        saveNote(path, editor.value);
+      }
+    } catch (e) { /* ignore */ }
     toggleMode('view');
   }, 0);
 });
 
 window.addEventListener("beforeunload", () => {
-  if (currentRef && currentMode === 'edit') set(currentRef, editor.value);
+  if (currentRef && currentMode === 'edit') {
+    const path = currentRef._path.pieces_.slice(1).join('/');
+    saveNote(path, editor.value);
+  }
 });
