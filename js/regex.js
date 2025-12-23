@@ -10,38 +10,39 @@ export function formatTextForView(text) {
     // Line breaks
     escaped = escaped.replace(/\n/g, "<br>");
 
-    // Protect lines after a template link (containing $ or %24) so they are NOT auto-linkified.
-    // We wrap such lines in a span.variable-candidate to prevent the URL regex from matching them.
-    let __VAR_TOKEN_MAP = null;
-    try {
-        const parts = escaped.split("<br>");
-        for (let i = 0; i < parts.length; i++) {
-            const p = parts[i];
-            if (/\$|%24/.test(p)) {
-                // mark subsequent non-empty lines until a blank line
-                for (let j = i + 1; j < parts.length; j++) {
-                    if (!parts[j].trim()) break; // stop on blank line
-                    // wrap only if not already wrapped
-                    if (!/^\s*<span class="variable-candidate">/.test(parts[j])) {
-                        parts[j] = `<span class="variable-candidate">${parts[j].trim()}</span>`;
+    // If the string contains unresolved variables (e.g., $job), skip the variable-candidate logic so $job is shown as plain text
+    if (!/\$[A-Za-z0-9\-_]+/.test(escaped)) {
+        let __VAR_TOKEN_MAP = null;
+        try {
+            const parts = escaped.split("<br>");
+            for (let i = 0; i < parts.length; i++) {
+                const p = parts[i];
+                if (/\$|%24/.test(p)) {
+                    // mark subsequent non-empty lines until a blank line
+                    for (let j = i + 1; j < parts.length; j++) {
+                        if (!parts[j].trim()) break; // stop on blank line
+                        // wrap only if not already wrapped
+                        if (!/^\s*<span class="variable-candidate">/.test(parts[j])) {
+                            parts[j] = `<span class="variable-candidate">${parts[j].trim()}</span>`;
+                        }
                     }
                 }
             }
-        }
-        escaped = parts.join("<br>");
+            escaped = parts.join("<br>");
 
-        // Replace variable-candidate spans with placeholder tokens so later regexes won't match their content
-        const map = [];
-        escaped = escaped.replace(/<span class="variable-candidate">([\s\S]*?)<\/span>/gi, function (_, inner) {
-            const id = map.length;
-            map.push(inner);
-            return `__VAR_TOKEN_${id}__`;
-        });
-        __VAR_TOKEN_MAP = map;
-    } catch (e) {
-        // if anything goes wrong, fall back to the original escaped string
-        console.error('variable-candidate marking failed', e);
-        __VAR_TOKEN_MAP = null;
+            // Replace variable-candidate spans with placeholder tokens so later regexes won't match their content
+            const map = [];
+            escaped = escaped.replace(/<span class="variable-candidate">([\s\S]*?)<\/span>/gi, function (_, inner) {
+                const id = map.length;
+                map.push(inner);
+                return `__VAR_TOKEN_${id}__`;
+            });
+            __VAR_TOKEN_MAP = map;
+        } catch (e) {
+            // if anything goes wrong, fall back to the original escaped string
+            console.error('variable-candidate marking failed', e);
+            __VAR_TOKEN_MAP = null;
+        }
     }
 
     // Hashtags: convert #tag into internal hashtag pages using URL param (e.g., /x/hashtag/?tag=tag)

@@ -77,15 +77,103 @@ function attachVariableListener(name, element) {
 
         const ref = dbRef(db, 'notes/' + key);
         // subscribe and update all associated elements when value changes
-        const unsub = onValue(ref, snapshot => {
+        const unsub = onValue(ref, async snapshot => {
             const val = snapshot.val();
-            const html = formatTextForView(typeof val === 'string' ? val : '');
+            // Recursively resolve variables in the value
+            async function resolveVars(text, visited = [], currentVar = key) {
+                if (typeof text !== 'string') return '';
+                // Prevent true cycles only
+                if (visited.includes(currentVar)) {
+                    console.warn('[variables] Infinite loop detected for variable', currentVar, 'visited:', visited);
+                    return '';
+                }
+                const nextVisited = [...visited, currentVar];
+                // regex to match $word or %24word where word is alphanumeric, dash or underscore
+                const re = /(?:\$|%24)([A-Za-z0-9\-_]+)/g;
+                // Use async string replacement to handle all variables, including trailing ones
+                const replaced = await replaceAsync(text, re, async (match, varName) => {
+                    varName = varName.toLowerCase();
+                    let varVal = '';
+                    const varEntry = variableRegistry.get(varName);
+                    if (varEntry && varEntry.lastVal !== undefined) {
+                        // If the note exists but is empty/null, show the variable name
+                        let isEmpty = false;
+                        if (typeof varEntry.lastVal === 'string') {
+                            isEmpty = varEntry.lastVal.trim() === '';
+                        } else if (varEntry.lastVal === null || varEntry.lastVal === undefined) {
+                            isEmpty = true;
+                        }
+                        if (isEmpty) {
+                            varVal = match;
+                        } else {
+                            console.log(`[variables] Resolving $${varName} from registry cache`, varEntry.lastVal);
+                            varVal = await resolveVars(varEntry.lastVal, nextVisited, varName);
+                        }
+                    } else {
+                        try {
+                            console.log(`[variables] Fetching $${varName} from Firebase`);
+                            const snap = await import('https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js').then(mod => mod.get(dbRef(db, 'notes/' + varName)));
+                            const snapVal = snap && snap.val ? snap.val() : '';
+                            let isEmpty = false;
+                            if (typeof snapVal === 'string') {
+                                isEmpty = snapVal.trim() === '';
+                            } else if (snapVal && typeof snapVal === 'object' && typeof snapVal.content === 'string') {
+                                isEmpty = snapVal.content.trim() === '';
+                            } else if (snapVal === null || snapVal === undefined) {
+                                isEmpty = true;
+                            }
+                            if (typeof snapVal === 'string' && !isEmpty) {
+                                console.log(`[variables] $${varName} resolved to string`, snapVal);
+                                varVal = await resolveVars(snapVal, nextVisited, varName);
+                            } else if (snapVal && typeof snapVal === 'object' && typeof snapVal.content === 'string' && !isEmpty) {
+                                console.log(`[variables] $${varName} resolved to object.content`, snapVal.content);
+                                varVal = await resolveVars(snapVal.content, nextVisited, varName);
+                            } else {
+                                console.warn(`[variables] $${varName} not found or empty, showing as variable`);
+                                varVal = match; // Show the original variable (e.g., $job)
+                            }
+                        } catch (e) {
+                            console.error(`[variables] Error fetching $${varName} from Firebase`, e);
+                            varVal = match; // Show the original variable (e.g., $job)
+                        }
+                    }
+                    return varVal;
+                });
+                console.log(`[variables] Resolved text for $${currentVar}:`, replaced);
+                return replaced;
+            }
+
+            // Helper: async string replace
+            async function replaceAsync(str, regex, asyncFn) {
+                const matches = [];
+                str.replace(regex, (...args) => {
+                    matches.push(args);
+                    return '';
+                });
+                if (!matches.length) return str;
+                const data = await Promise.all(matches.map(args => asyncFn(...args)));
+                let i = 0;
+                return str.replace(regex, () => data[i++]);
+            }
+            // Support both string and object note values (object with 'content')
+            let noteContent = '';
+            if (typeof val === 'string') {
+                noteContent = val;
+            } else if (val && typeof val === 'object' && typeof val.content === 'string') {
+                noteContent = val.content;
+            }
+            entry.lastVal = noteContent;
+            const resolved = await resolveVars(noteContent);
+            const html = formatTextForView(resolved);
             // update DOM for all placeholders bound to this variable
             entry.elements.forEach(el => {
-                // Replace inner content; keep placeholder span but set innerHTML
                 el.classList.add('variable-resolved');
-                // if result is empty, show nothing (remove contents)
-                el.innerHTML = html || '';
+                // If resolved is empty, show the literal variable name as a fallback
+                if (!resolved || resolved.trim() === '') {
+                    el.innerText = `$${name}`;
+                } else {
+                    el.innerHTML = html;
+                }
             });
         }, err => {
             console.error('[variables] error fetching', name, err);
