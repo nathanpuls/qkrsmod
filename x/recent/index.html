@@ -56,19 +56,16 @@
         }
 
         .recent-link {
-            color: #2a5bd7;
+            color: Black;
             font-size: 1.1em;
             font-weight: 500;
-            text-decoration: none;
+            text-decoration: underline;
             margin-bottom: 0.2em;
             word-break: break-all;
             transition: color 0.2s;
         }
 
-        .recent-link:hover {
-            color: #1741a6;
-            text-decoration: underline;
-        }
+    
 
         .timestamp {
             color: #888;
@@ -144,7 +141,7 @@
                 notesArr.slice(0, 20).forEach(note => {
                     const li = document.createElement('li');
                     li.innerHTML = `
-                        <a class="recent-link" href="/qK.RS/${encodeURIComponent(note.name)}">${note.name}</a>
+                        <a class="recent-link" href="../../${encodeURIComponent(note.name)}">${note.name}</a>
                         <div class="timestamp">${new Date(note.updatedAt).toLocaleString()}</div>
                     `;
                     list.appendChild(li);
