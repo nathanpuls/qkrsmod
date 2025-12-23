@@ -55,7 +55,9 @@ export function formatTextForView(text) {
     // Slash-paths (e.g., /xmas or /foo/bar) -> internal links
     // Matches a leading slash and subsequent path segments, stops before whitespace, <br>, end, or punctuation
     escaped = escaped.replace(/(^|[\s>])(\/[A-Za-z0-9][A-Za-z0-9\/\-_]*)(?=\s|<br>|$|[.,!?:;])/g, (m, prefix, path) => {
-        return `${prefix}<a href="${path}" >${path}</a>`;
+        // Show only the last segment (no slash) as link text
+        const display = path.split('/').pop();
+        return `${prefix}<a href="${path}" >${display}</a>`;
     });
 
     // Addresses moved below (applied after other linkifications to avoid matching generated hrefs)

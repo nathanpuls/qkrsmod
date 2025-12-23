@@ -160,8 +160,9 @@
                 }
                 notesArr.slice(0, 20).forEach(note => {
                     const li = document.createElement('li');
+                    const displayName = note.name.split('/').pop();
                     li.innerHTML = `
-                        <a class="recent-link" href="../../${encodeURIComponent(note.name)}">${note.name}</a>
+                        <a class="recent-link" href="../../${encodeURIComponent(note.name)}">${displayName}</a>
                         <div class="timestamp">${new Date(note.updatedAt).toLocaleString()}</div>
                     `;
                     list.appendChild(li);
