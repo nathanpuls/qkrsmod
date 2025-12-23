@@ -12,7 +12,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // If the user directly visited /x/hashtag/<tag> (and served the root index via SPA fallback),
   // fetch and replace document with the dedicated hashtag page so the hashtag script can run.
   (function tryLoadHashtagPage() {
-    // If user landed on /x/hashtag/?tag=foo or /x/hashtag/foo, load the static hashtag page
+     // If user landed on /x/hashtag/?tag=foo or /x/hashtag/foo, load the static hashtag page
     const isIndexPath = location.pathname.toLowerCase().includes('/x/hashtag/index.html');
     if (!isIndexPath) {
       const pathMatch = location.pathname.match(/^\/x\/hashtag\/([^\/]+)\/?$/i);
