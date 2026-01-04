@@ -30,6 +30,7 @@
 
     <form on:submit|preventDefault={handleSubmit}>
         <input
+            id="homeSearchInput"
             type="text"
             bind:value={pageInput}
             placeholder="Type page name + Enter ⏎"
@@ -93,13 +94,13 @@
         gap: 10px;
     }
 
-    input[type="text"] {
+    #homeSearchInput {
         width: 100%;
         max-width: 400px;
         padding: 14px 18px;
         font-size: 1.2rem;
         border-radius: 12px;
-        border: 1px solid #111;
+        border: 1px solid #111 !important;
         outline: none;
         transition: border-color 0.2s;
         font-family: inherit;
