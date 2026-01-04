@@ -64,7 +64,7 @@
             <a href="mailto:x@qk.rs">Email Us</a>
         </p>
     </form>
-    <p class="build-info">v2.1 • {buildTime}</p>
+    <p class="deploy-time">Last deploy: {buildTime}</p>
 </div>
 
 <style>
@@ -144,11 +144,9 @@
         text-decoration: underline;
     }
 
-    .build-info {
-        margin-top: 40px;
-        font-size: 0.75rem;
-        color: #bbb;
-        font-weight: 300;
-        letter-spacing: 0.5px;
+    .deploy-time {
+        margin-top: 50px;
+        font-size: 0.7rem;
+        color: #ccc;
     }
 </style>
