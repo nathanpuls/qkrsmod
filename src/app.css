@@ -20,7 +20,7 @@
   border: none !important;
   box-shadow: none !important;
   color: inherit !important;
-  font-size: 24px !important;
+  font-size: var(--icon-size) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -91,11 +91,14 @@ body {
 }
 
 #editorWrapper {
-  max-width: 400px;
-  /* Match approx width of bottom bar icons */
-  margin: 30px auto 0 auto;
-  /* Center block, keep top margin */
-  width: 100%;
+  max-width: 900px;
+  /* Wider for better readability */
+  margin: 30px 0 0 0;
+  /* Left-aligned, no auto centering */
+  width: 90%;
+  /* Responsive width */
+  padding-left: 5%;
+  /* Left padding for breathing room */
 }
 
 #editor,
@@ -202,6 +205,8 @@ body {
   /* JS will toggle */
   overflow-y: visible;
   /* allow page to scroll instead */
+  text-align: left;
+  /* Explicitly left-align text */
 }
 
 #editor {
@@ -432,7 +437,7 @@ a {
   border: none !important;
   box-shadow: none !important;
   color: inherit;
-  font-size: 32px !important;
+  font-size: var(--icon-size) !important;
   display: flex;
   align-items: center;
   justify-content: center;

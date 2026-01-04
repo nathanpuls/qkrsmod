@@ -192,15 +192,17 @@
     }
 
     // --- Actions ---
-    function copyContent() {
+    function copyContent(event) {
         navigator.clipboard
             .writeText(content)
-            .then(() => showTooltip("Copied content!"));
+            .then(() => showTooltip("Copied content!", event))
+            .catch(() => showTooltip("Copy failed", event));
     }
-    function copyLink() {
+    function copyLink(event) {
         navigator.clipboard
             .writeText(window.location.href)
-            .then(() => showTooltip("Copied link!"));
+            .then(() => showTooltip("Copied link!", event))
+            .catch(() => showTooltip("Copy failed", event));
     }
     function toggleQR() {
         isQRModalOpen = !isQRModalOpen;
@@ -210,9 +212,24 @@
     let tooltipText = "";
     let tooltipVisible = false;
     let tooltipTimeout;
-    function showTooltip(msg) {
+    let tooltipX = "50%";
+    let tooltipBottom = "80px";
+
+    function showTooltip(msg, event) {
         tooltipText = msg;
         tooltipVisible = true;
+
+        // Calculate position based on clicked button
+        if (event && event.currentTarget) {
+            const rect = event.currentTarget.getBoundingClientRect();
+
+            // Position horizontally centered on the button
+            tooltipX = `${rect.left + rect.width / 2}px`;
+
+            // Position above the button (60px is bottom bar height)
+            tooltipBottom = "75px"; // Just above bottom bar
+        }
+
         clearTimeout(tooltipTimeout);
         tooltipTimeout = setTimeout(() => {
             tooltipVisible = false;
@@ -268,7 +285,8 @@
             bind:value={content}
             on:input={handleInput}
             on:blur={() => {
-                /* save trigger handled by input debounce */
+                // Switch to view mode when editor loses focus (especially useful on mobile)
+                mode = "view";
             }}
             placeholder=""
         ></textarea>
@@ -280,10 +298,21 @@
     <button on:click={openSearch} title="Search (S)"
         ><i class="ph-bold ph-magnifying-glass"></i></button
     >
-    <button on:click={copyContent} title="Copy Content (C)"
-        ><i class="ph-bold ph-copy-simple"></i></button
+    <button
+        on:click={(e) => copyContent(e)}
+        on:touchend={(e) => {
+            e.preventDefault();
+            copyContent(e);
+        }}
+        title="Copy Content (C)"><i class="ph-bold ph-copy-simple"></i></button
     >
-    <button on:click={copyLink} title="Copy Link (L)"
+    <button
+        on:click={(e) => copyLink(e)}
+        on:touchend={(e) => {
+            e.preventDefault();
+            copyLink(e);
+        }}
+        title="Copy Link (L)"
         ><i class="ph-bold ph-link-simple-horizontal"></i></button
     >
     <button on:click={() => goto("/")} title="Home (H)"
@@ -310,7 +339,7 @@
 <div
     class="tooltip"
     class:show={tooltipVisible}
-    style="top: 80%; left: 50%; transform: translateX(-50%);"
+    style="bottom: {tooltipBottom}; left: {tooltipX}; transform: translateX(-50%);"
 >
     {tooltipText}
 </div>
