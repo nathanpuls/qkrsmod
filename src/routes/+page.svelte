@@ -24,6 +24,8 @@
             return;
         inputEl?.focus();
     }
+
+    const buildTime = __BUILD_TIME__;
 </script>
 
 <svelte:window on:click={handleWindowClick} />
@@ -62,6 +64,7 @@
             <a href="mailto:x@qk.rs">Email Us</a>
         </p>
     </form>
+    <p class="build-info">v2.1 • {buildTime}</p>
 </div>
 
 <style>
@@ -139,5 +142,13 @@
     }
     .hint a:hover {
         text-decoration: underline;
+    }
+
+    .build-info {
+        margin-top: 40px;
+        font-size: 0.75rem;
+        color: #bbb;
+        font-weight: 300;
+        letter-spacing: 0.5px;
     }
 </style>
