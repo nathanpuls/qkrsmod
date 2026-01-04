@@ -86,13 +86,6 @@
         margin: 0;
     }
 
-    p.description {
-        font-weight: 300;
-        font-size: 1rem;
-        color: #111;
-        margin-bottom: 30px;
-    }
-
     form {
         display: flex;
         flex-direction: column;
@@ -102,6 +95,7 @@
 
     input[type="text"] {
         width: 100%;
+        max-width: 400px;
         padding: 14px 18px;
         font-size: 1.2rem;
         border-radius: 12px;
