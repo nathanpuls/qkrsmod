@@ -63,7 +63,6 @@
         </p>
     </form>
 </div>
-// Trigger deploy
 
 <style>
     /* Global body style to center content only for this page */
