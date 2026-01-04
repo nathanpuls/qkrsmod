@@ -2,6 +2,7 @@
     import { goto } from "$app/navigation";
 
     let pageInput = "";
+    let inputEl;
 
     function handleSubmit() {
         if (!pageInput.trim()) return;
@@ -13,7 +14,19 @@
         const randomDigit = Math.floor(1000 + Math.random() * 9000);
         goto("/" + randomDigit);
     }
+
+    function handleWindowClick(e) {
+        if (
+            e.target.closest("a") ||
+            e.target.closest("button") ||
+            e.target.closest("input")
+        )
+            return;
+        inputEl?.focus();
+    }
 </script>
+
+<svelte:window on:click={handleWindowClick} />
 
 <div class="container">
     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -30,7 +43,7 @@
 
     <form on:submit|preventDefault={handleSubmit}>
         <input
-            id="homeSearchInput"
+            bind:this={inputEl}
             type="text"
             bind:value={pageInput}
             placeholder="Type page name + Enter ⏎"
@@ -50,6 +63,7 @@
         </p>
     </form>
 </div>
+// Trigger deploy
 
 <style>
     /* Global body style to center content only for this page */
@@ -94,13 +108,13 @@
         gap: 10px;
     }
 
-    #homeSearchInput {
+    input[type="text"] {
         width: 100%;
         max-width: 400px;
         padding: 14px 18px;
         font-size: 1.2rem;
         border-radius: 12px;
-        border: 1px solid #111 !important;
+        border: 1px solid #111;
         outline: none;
         transition: border-color 0.2s;
         font-family: inherit;
