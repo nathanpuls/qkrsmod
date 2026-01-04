@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>qk.rs</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+<style>
+  
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body, html {
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .container { max-width: 1000px; width: 90%; }
+
+  .title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    gap: 5px;
+  }
+
+  .logo { width: 50px; height: 50px; cursor: pointer; }
+
+  h1 { font-weight: 500; font-size: 2rem; color: var(--primary); }
+
+  p.description { font-weight: 300; font-size: 1rem; color: var(--primary); margin-bottom: 30px; }
+
+  form { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+
+  input[type="text"] {
+    width: 100%;
+    padding: 14px 18px;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid var(--black);
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  input[type="text"]:focus { border-color: none; }
+
+  .hint { font-size: 0.9rem; color: var(--black); margin-top: 30px; display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; }
+
+  .hint a { color: inherit; text-decoration: underline; cursor: pointer; padding: 10px 15px; border-radius: 8px; }
+  .hint a:hover { text-decoration: underline; }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="title-container">
+    <img src="../logo.png" alt="duck" class="logo">
+    <h1>qk.rs</h1>
+  </div>
+  <!-- <p class="description">Share text in real time with a simple link.</p> -->
+
+  <form id="pageForm">
+    <input type="text" id="pageInput" placeholder="Type page name + Enter ⏎" autofocus autocomplete="off">
+    <p class="hint">
+      <a href="/x/about">About</a>
+      <a href="/x/shortcuts">Shortcuts</a>
+      <a href="#" id="randomPageBtn">Random Page</a>
+      <a href="mailto:x@qk.rs">Email Us</a>
+    </p>
+  </form>
+</div>
+
+<script>
+  const pageInput = document.getElementById("pageInput");
+  const pageForm = document.getElementById("pageForm");
+  const logo = document.querySelector('.logo');
+  const randomPageBtn = document.getElementById('randomPageBtn');
+
+  // form submit
+  pageForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const pageName = pageInput.value.trim();
+    if(!pageName) return;
+    const normalized = pageName.toLowerCase().replace(/\s+/g, '-');
+    window.location.href = window.location.origin + '/' + normalized;
+  });
+
+  // home click
+  logo.addEventListener('click', () => {
+    window.location.href = window.location.origin + '/x/home';
+  });
+
+  // random page click
+  randomPageBtn.addEventListener('click', e => {
+    e.preventDefault();
+    const randomSixDigit = Math.floor(1000 + Math.random() * 9000);
+    window.location.href = window.location.origin + '/' + randomSixDigit;
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About qk.rs</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css" /> 
+    
+    <style>
+        /* CSS variables to match main app */
+        :root {
+          --black: #111111;
+          --primary: #4e4e4e;
+          --light-gray: #ccc;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #ffffff;
+            color: var(--black);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            min-height: 100vh; /* Ensure content area is at least full height */
+            display: flex;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 700px;
+            margin: 40px auto 0 auto; /* Removed bottom margin, will be added by footer */
+            padding: 0 20px;
+            flex-grow: 1; /* Allows the content to push the footer down */
+        }
+        h1 {
+            font-size: 28px;
+            color: var(--black);
+            /* border-bottom: 2px solid var(--light-gray); */
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+        h2 {
+            font-size: 22px;
+            color: var(--black);
+            margin-top: 35px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        p, li {
+            font-size: 16px;
+            color: var(--primary);
+        }
+        .emphasis {
+            font-weight: 600; /* Use font-weight instead of ** for emphasis */
+            color: var(--black);
+        }
+        .feature-list {
+            list-style-type: none; 
+            padding: 0;
+        }
+        .feature-list li {
+            margin-bottom: 15px; 
+            display: flex;
+            align-items: flex-start;
+        }
+        .feature-list i {
+            color: var(--primary); 
+            margin-right: 12px;
+            font-size: 18px;
+            /* Adjust margin top to align icon better with the text line-height */
+            margin-top: 3px; 
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #eee;
+            margin: 30px 0;
+        }
+        .code-block {
+            background: #f8f8f8; 
+            padding: 2px 6px; 
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 15px;
+            color: #111111;
+            display: inline-block;
+        }
+        /* Style for the non-fixed footer */
+        #pageFooter {
+            text-align: center;
+            padding: 20px 0 40px 0;
+            margin-top: 40px; /* Space between content and footer */
+            /* border-top: 1px solid #eee; */
+        }
+        #pageFooter a {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        #duckLogo {
+            height: 32px; /* Slightly larger logo for the footer */
+            margin-bottom: 15px;
+            display: block;
+            margin: 0 auto 15px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <h1>
+        About qk.rs
+    </h1>
+
+    <p>
+        <span class="emphasis">qk.rs</span> is a <span class="emphasis">minimalist, URL-based notebook and rapid communication tool.</span> It turns any path you type into a public, instantly editable, and shareable page. Think of it as a personal, infinitely flexible whiteboard accessible via any device.
+    </p>
+
+    <hr>
+
+    <h2>
+        <i class="ph-bold ph-pencil-line" style="font-size: 24px; color: var(--black); margin-right: 10px;"></i> How It Works
+    </h2>
+    <ul class="feature-list">
+        <li>
+            <i class="ph-bold ph-link-simple-horizontal"></i> 
+            <div>
+                <span class="emphasis">Instant Pages:</span> Just type a path like <span class="code-block">secretpage</span> after the main URL (or use the search feature). If the page doesn't exist, it's created instantly. If it does, you begin editing the live content.
+            </div>
+        </li>
+        <li>
+            <i class="ph-bold ph-users"></i> 
+            <div>
+                <span class="emphasis">Live Collaboration:</span> All changes are saved in real time (via Firebase) and update instantly for anyone else viewing the same URL. Use it for quick collaboration, temporary shared notes, or delivering code snippets.
+            </div>
+        </li>
+        <li>
+            <i class="ph-bold ph-keyboard"></i> 
+            <div>
+                <span class="emphasis">Efficiency Focus:</span> The interface is built for speed. Use the bottom bar buttons or, even faster, dedicated <a href="/x/shortcuts" style="color: var(--primary);">keyboard shortcuts</a> to search, copy, and navigate.
+            </div>
+        </li>
+        <li>
+            <i class="ph-bold ph-scroll"></i> 
+            <div>
+                <span class="emphasis">Long-Form Editor:</span> The editor is a simple, distraction-free field optimized for focused writing and input.
+            </div>
+        </li>
+    </ul>
+
+
+  
+
+</div>
+
+<div id="pageFooter">
+    <a href="/x/home"><img src="/x/logo.png" alt="qk.rs home" id="duckLogo"></a>
+    <p style="margin: 0; font-size: 15px;">
+       
+    </p>
+</div>
+
+</body>
+</html>
