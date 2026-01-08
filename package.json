@@ -9,7 +9,7 @@
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo ''",
 		"q": "npm run build && npx wrangler pages deploy .svelte-kit/cloudflare",
-		"l": "npm run dev -- --open"
+		"l": "npm run dev -- --open --port 3000"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^7.0.0",
