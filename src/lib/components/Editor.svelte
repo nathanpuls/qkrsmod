@@ -51,11 +51,16 @@
     function loadNote(p) {
         if (unsubscribe) unsubscribe();
         clearTimeout(typingTimeout); // Cancel pending saves
+        teardownVariables(); // Clear variable state before loading new page
+
         // Reset state
         mode = "view";
         content = "";
 
         unsubscribe = listenToNote(p, (val) => {
+            // Guard: ensure we only update if this listener is still for the active path
+            if (p !== path) return;
+
             let newContent = "";
             if (typeof val === "string") {
                 newContent = val;
@@ -64,21 +69,10 @@
             }
             // Update content if changed (avoid loop if typing)
             if (newContent !== content) {
-                // If we are editing and typing, we might conflict.
-                // But for simplicity, we overwrite from DB unless we have valid local changes?
-                // Legacy code overwrites unless it's the same.
-                // Using debounced save prevents quick overwrites.
                 if (document.activeElement !== editorEl) {
                     content = newContent;
                 } else {
-                    // If editing, maybe don't overwrite?
-                    // Legacy code overwrites: `if (content !== editor.value) { editor.value = content; ... }`
-                    // But if user is typing...
-                    // We'll trust legacy logic: overwrite.
                     if (content !== newContent) {
-                        // warning: could lose cursor position
-                        // svelte binds value, cursor jump might happen.
-                        // improved logic:
                         content = newContent;
                     }
                 }
