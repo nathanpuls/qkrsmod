@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
 	plugins: [sveltekit()],
 	define: {
-		__BUILD_TIME__: JSON.stringify(new Date().toString())
+		__BUILD_TIME__: Date.now()
 	},
 	server: {
 		host: true, // Listen on all network interfaces (allows mobile access)

@@ -25,7 +25,7 @@
         inputEl?.focus();
     }
 
-    const buildTime = __BUILD_TIME__;
+    const buildTime = new Date(__BUILD_TIME__).toLocaleString();
 </script>
 
 <svelte:window on:click={handleWindowClick} />
