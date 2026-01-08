@@ -50,6 +50,7 @@
 
     function loadNote(p) {
         if (unsubscribe) unsubscribe();
+        clearTimeout(typingTimeout); // Cancel pending saves
         // Reset state
         mode = "view";
         content = "";
