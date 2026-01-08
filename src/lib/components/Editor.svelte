@@ -24,7 +24,10 @@
 
     // Reactive statements
     $: if (path) {
-        content = ""; // Clear content immediately when path changes
+        // Immediate cleanup before even calling loadNote
+        if (unsubscribe) unsubscribe();
+        content = "";
+        teardownVariables();
         loadNote(path);
     }
 
@@ -49,16 +52,12 @@
     }
 
     function loadNote(p) {
-        if (unsubscribe) unsubscribe();
-        clearTimeout(typingTimeout); // Cancel pending saves
-        teardownVariables(); // Clear variable state before loading new page
-
-        // Reset state
+        // Re-confirm cleanup inside the function scope
+        clearTimeout(typingTimeout);
         mode = "view";
-        content = "";
 
         unsubscribe = listenToNote(p, (val) => {
-            // Guard: ensure we only update if this listener is still for the active path
+            // Strict Guard: If the user navigated away while this was fetching, ignore it.
             if (p !== path) return;
 
             let newContent = "";
@@ -67,16 +66,15 @@
             } else if (val && typeof val === "object" && val.content) {
                 newContent = val.content;
             }
-            // Update content if changed (avoid loop if typing)
+
+            // Sync with DB
             if (newContent !== content) {
+                // If the user isn't currently typing in the box, we can safely sync.
                 if (document.activeElement !== editorEl) {
                     content = newContent;
-                } else {
-                    if (content !== newContent) {
-                        content = newContent;
-                    }
                 }
             }
+
             if (newContent === "" && !val) {
                 mode = "edit"; // Auto-edit if empty
             }
@@ -93,11 +91,17 @@
     }
 
     function handleInput() {
+        if (!path) return;
+        const currentPath = path; // Capture path at time of input
+
         autoResizeEditor();
         clearTimeout(typingTimeout);
         typingTimeout = setTimeout(() => {
-            saveNote(path, content);
-        }, 200);
+            // Guard: Only save if we are still on the same path where the typing happened.
+            if (path === currentPath) {
+                saveNote(path, content);
+            }
+        }, 250); // Slightly longer debounce to be safe
     }
 
     function toggleMode() {
