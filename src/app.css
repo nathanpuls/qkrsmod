@@ -65,6 +65,7 @@
   --brand: var(--black) --icon: var(--duck);
   --font-size: 18px;
   --icon-size: 24px;
+  /* wevri */
   --search: var(--white);
   --bottom-bar: var(--white);
   --underline: var(--black);
@@ -205,7 +206,7 @@ body {
   /* JS will toggle */
   overflow-y: visible;
   /* allow page to scroll instead */
-  text-align: left;
+  text-align: left !important;
   /* Explicitly left-align text */
 }
 
