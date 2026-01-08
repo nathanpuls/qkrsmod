@@ -285,7 +285,7 @@
             bind:value={content}
             on:input={handleInput}
             on:blur={() => {
-                // Switch to view mode when editor loses focus (especially useful on mobile)
+                // Switch to view mode on blur (e.g. mobile keyboard dismiss)
                 mode = "view";
             }}
             placeholder=""
