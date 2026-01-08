@@ -22,14 +22,8 @@
     let searchInputEl;
     let isQRModalOpen = false;
 
-    // Reactive statements
-    $: if (path) {
-        // Immediate cleanup before even calling loadNote
-        if (unsubscribe) unsubscribe();
-        content = "";
-        teardownVariables();
-        loadNote(path);
-    }
+    // Load the note on initialization (the #key block handles path changes)
+    loadNote(path);
 
     // Computed view HTML
     $: viewHTML = formatTextForView(content);
@@ -242,6 +236,7 @@
 
     onDestroy(() => {
         if (unsubscribe) unsubscribe();
+        clearTimeout(typingTimeout); // Cancel any pending saves
         teardownVariables();
     });
 </script>

@@ -25,5 +25,7 @@
 {#if isHashtag}
   <HashtagView {tag} />
 {:else}
-  <Editor {path} />
+  {#key path}
+    <Editor {path} />
+  {/key}
 {/if}
