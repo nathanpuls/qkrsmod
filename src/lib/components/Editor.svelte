@@ -24,6 +24,7 @@
 
     // Reactive statements
     $: if (path) {
+        content = ""; // Clear content immediately when path changes
         loadNote(path);
     }
 
