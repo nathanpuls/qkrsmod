@@ -187,7 +187,11 @@
     function handleSearchKey(e) {
         if (e.key === "Enter") {
             if (searchQuery.trim()) {
-                goto("/" + searchQuery.trim()); // Legacy behavior
+                const normalized = searchQuery
+                    .trim()
+                    .toLowerCase()
+                    .replace(/\s+/g, "-");
+                goto("/" + normalized);
                 closeSearch();
             }
         }
