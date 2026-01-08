@@ -71,6 +71,9 @@
 
             if (newContent === "" && !val) {
                 mode = "edit"; // Auto-edit if empty
+                tick().then(() => {
+                    editorEl?.focus();
+                });
             }
         });
     }
