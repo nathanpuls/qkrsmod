@@ -226,29 +226,6 @@
         toggleMode();
     }
 
-    // Track slash trigger
-    function checkSlashTrigger() {
-        if (!editorEl) return;
-        const text = content.slice(0, editorEl.selectionStart);
-        const lastSlash = text.lastIndexOf("/");
-
-        if (
-            lastSlash !== -1 &&
-            (lastSlash === 0 ||
-                text[lastSlash - 1] === " " ||
-                text[lastSlash - 1] === "\n")
-        ) {
-            const query = text.slice(lastSlash + 1);
-            if (!query.includes(" ")) {
-                isAutocompleteOpen = true;
-                autocompleteQuery = query;
-                selectedIndex = 0;
-                return;
-            }
-        }
-        isAutocompleteOpen = false;
-    }
-
     function selectNote(noteName) {
         if (!editorEl) return;
         const start = editorEl.selectionStart;
