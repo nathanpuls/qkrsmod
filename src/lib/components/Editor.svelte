@@ -253,6 +253,7 @@
             bind:this={searchInputEl}
             bind:value={searchQuery}
             on:keydown={handleSearchKey}
+            on:blur={closeSearch}
             type="text"
             id="topSearchInput"
             placeholder="Type page name + Enter ⏎"
