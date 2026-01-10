@@ -50,8 +50,8 @@ export function setupVariables(staticViewer, mode) {
             span.setAttribute('data-var', name);
             span.textContent = '…'; // loading indicator
             // Styles for smooth fade-in
+            // Styles for instant reveal (hidden initially)
             span.style.opacity = '0';
-            span.style.transition = 'opacity 0.3s ease';
             parts.push(span);
 
             // ensure we have a listener for this variable
@@ -176,10 +176,10 @@ function attachVariableListener(name, element) {
                     el.innerHTML = html;
                 }
 
-                // Fade in
-                requestAnimationFrame(() => {
+                // Slight delay to allow batching/settling, effectively synchronizing "arrival"
+                setTimeout(() => {
                     el.style.opacity = '1';
-                });
+                }, 50);
             });
         }, err => {
             console.error('[variables] error fetching', name, err);
