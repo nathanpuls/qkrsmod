@@ -22,11 +22,44 @@
     let searchInputEl;
     let isQRModalOpen = false;
 
+    // --- Caret Positioning Helper (Shadow Div) ---
+    function getCaretCoordinates(element, position) {
+        const div = document.createElement("div");
+        const style = window.getComputedStyle(element);
+        for (const prop of Array.from(style)) {
+            div.style[prop] = style.getPropertyValue(prop);
+        }
+        div.style.position = "absolute";
+        div.style.top = "0";
+        div.style.left = "-9999px";
+        div.style.visibility = "hidden";
+        div.style.height = "auto"; // Re-calc height
+        div.style.width = style.width;
+        div.textContent = element.value.substring(0, position);
+
+        const span = document.createElement("span");
+        span.textContent = element.value.substring(position) || ".";
+        div.appendChild(span);
+
+        document.body.appendChild(div);
+
+        const coordinates = {
+            top: span.offsetTop + parseInt(style["borderTopWidth"]),
+            left: span.offsetLeft + parseInt(style["borderLeftWidth"]),
+            height: parseInt(style["lineHeight"]),
+        };
+
+        document.body.removeChild(div);
+        return coordinates;
+    }
+
     // Autocomplete State
     let isAutocompleteOpen = false;
     let autocompleteQuery = "";
     let allNoteNames = [];
     let selectedIndex = 0;
+    let menuTop = 0;
+    let menuLeft = 0;
 
     // Fetch names on mount
     onMount(async () => {
@@ -38,6 +71,60 @@
             n.toLowerCase().includes(autocompleteQuery.toLowerCase()),
         )
         .slice(0, 10);
+
+    // Track slash trigger
+    function checkSlashTrigger() {
+        if (!editorEl) return;
+        const start = editorEl.selectionStart;
+        const text = content.slice(0, start);
+        const lastSlash = text.lastIndexOf("/");
+
+        if (
+            lastSlash !== -1 &&
+            (lastSlash === 0 ||
+                text[lastSlash - 1] === " " ||
+                text[lastSlash - 1] === "\n")
+        ) {
+            const query = text.slice(lastSlash + 1);
+            if (!query.includes(" ")) {
+                isAutocompleteOpen = true;
+                autocompleteQuery = query;
+                selectedIndex = 0;
+
+                // Calculate position
+                const coords = getCaretCoordinates(editorEl, lastSlash + 1);
+                // Adjust for editor position
+                const editorRect = editorEl.getBoundingClientRect();
+                menuTop =
+                    window.scrollY +
+                    editorRect.top +
+                    coords.top +
+                    coords.height;
+                menuLeft = window.scrollX + editorRect.left + coords.left;
+                return;
+            }
+        }
+        isAutocompleteOpen = false;
+    }
+
+    function selectNote(noteName) {
+        if (!editorEl) return;
+        const start = editorEl.selectionStart;
+        const textBefore = content.slice(0, start);
+        const lastSlash = textBefore.lastIndexOf("/");
+
+        const newContent =
+            content.slice(0, lastSlash + 1) + noteName + content.slice(start);
+        content = newContent;
+        isAutocompleteOpen = false;
+
+        tick().then(() => {
+            const nextPos = lastSlash + 1 + noteName.length;
+            editorEl.setSelectionRange(nextPos, nextPos);
+            editorEl.focus();
+            handleInput();
+        });
+    }
 
     // Load the note on initialization (the #key block handles path changes)
     loadNote(path);
@@ -381,13 +468,16 @@
         ></textarea>
 
         {#if isAutocompleteOpen && filteredNotes.length > 0}
-            <div class="autocomplete-menu">
+            <div
+                class="autocomplete-menu"
+                style="top: {menuTop}px; left: {menuLeft}px;"
+            >
                 {#each filteredNotes as note, i}
                     <!-- svelte-ignore a11y-click-events-have-key-events -->
                     <div
                         class="autocomplete-item"
                         class:selected={i === selectedIndex}
-                        on:click={() => selectNote(note)}
+                        on:mousedown|preventDefault={() => selectNote(note)}
                         role="button"
                         tabindex="0"
                     >
@@ -505,14 +595,12 @@
 
     /* Autocomplete Menu Styles */
     .autocomplete-menu {
-        position: fixed;
-        bottom: 70px; /* Position above bottom bar */
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 400px;
+        position: absolute; /* Changed from fixed */
+        /* top/left set inline */
+        width: 300px; /* narrowed width */
+        max-width: 90vw;
         background: white;
-        border-radius: 12px;
+        border-radius: 6px;
         box-shadow:
             0 10px 25px rgba(0, 0, 0, 0.1),
             0 2px 5px rgba(0, 0, 0, 0.05);
