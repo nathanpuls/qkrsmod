@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { getDatabase, ref, onValue, set, get } from "firebase/database";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -54,7 +54,6 @@ export function saveNote(path, value) {
 // Fetch all note names
 export async function getAllNoteNames() {
   const notesRef = ref(db, 'notes');
-  const { get } from "firebase/database";
   const snapshot = await get(notesRef);
   if (snapshot.exists()) {
     return Object.keys(snapshot.val());
