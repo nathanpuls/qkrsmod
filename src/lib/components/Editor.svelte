@@ -70,8 +70,10 @@
     $: filteredNotes = allNoteNames
         .filter((n) => {
             if (n.length > 80) return false; // Filter out accidental long keys
-            if (n.startsWith("%")) return false; // Filter out encoded junk
+            if (n.includes("%")) return false; // Filter out encoded junk
             if (n.includes("&")) return false; // Filter out broken entities/params
+            if (n.includes("(") || n.includes(")")) return false; // Filter out parens
+            if (n.includes("*") || n.includes("+")) return false; // Filter out symbols
             return n.toLowerCase().includes(autocompleteQuery.toLowerCase());
         })
         .slice(0, 7);
