@@ -226,25 +226,6 @@
         toggleMode();
     }
 
-    function selectNote(noteName) {
-        if (!editorEl) return;
-        const start = editorEl.selectionStart;
-        const textBefore = content.slice(0, start);
-        const lastSlash = textBefore.lastIndexOf("/");
-
-        const newContent =
-            content.slice(0, lastSlash + 1) + noteName + content.slice(start);
-        content = newContent;
-        isAutocompleteOpen = false;
-
-        tick().then(() => {
-            const nextPos = lastSlash + 1 + noteName.length;
-            editorEl.setSelectionRange(nextPos, nextPos);
-            editorEl.focus();
-            handleInput();
-        });
-    }
-
     // --- Shortcuts ---
     function handleKeydown(e) {
         const key = e.key;
