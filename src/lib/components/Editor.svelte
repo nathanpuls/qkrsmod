@@ -73,7 +73,7 @@
             if (n.startsWith("%")) return false; // Filter out encoded junk
             return n.toLowerCase().includes(autocompleteQuery.toLowerCase());
         })
-        .slice(0, 5);
+        .slice(0, 7);
 
     // Track slash trigger
     function checkSlashTrigger() {
@@ -236,13 +236,9 @@
     function handleClickOutside(e) {
         if (!isAutocompleteOpen) return;
         if (!autocompleteMenuEl) return;
-        if (!editorEl) return;
 
-        // Check if click is outside both the menu and the editor
-        if (
-            !autocompleteMenuEl.contains(e.target) &&
-            !editorEl.contains(e.target)
-        ) {
+        // Check if click is outside the menu
+        if (!autocompleteMenuEl.contains(e.target)) {
             isAutocompleteOpen = false;
         }
     }
