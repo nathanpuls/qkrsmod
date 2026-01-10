@@ -30,6 +30,10 @@ export function listenToNote(path, callback) {
 
 // Save data to a note path
 export function saveNote(path, value) {
+  // Prevent saving junk/bot paths
+  if (path.length > 80) return;
+  if (/[%&*()+]/.test(path)) return;
+
   const noteRef = getNoteRef(path);
   // If value is a string, store as object with content and updatedAt
   if (typeof value === 'string') {
