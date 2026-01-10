@@ -114,12 +114,15 @@
         const lastSlash = textBefore.lastIndexOf("/");
 
         const newContent =
-            content.slice(0, lastSlash + 1) + noteName + content.slice(start);
+            content.slice(0, lastSlash + 1) +
+            noteName +
+            " " +
+            content.slice(start);
         content = newContent;
         isAutocompleteOpen = false;
 
         tick().then(() => {
-            const nextPos = lastSlash + 1 + noteName.length;
+            const nextPos = lastSlash + 1 + noteName.length + 1;
             editorEl.setSelectionRange(nextPos, nextPos);
             editorEl.focus();
             handleInput();
