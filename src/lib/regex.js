@@ -63,29 +63,31 @@ export function formatTextForView(text) {
     // Addresses moved below (applied after other linkifications to avoid matching generated hrefs)
     // (See further down where address linkification is inserted just before phone number handling.)
 
-    // Emails
+    // Emails (Matches raw email addresses)
     escaped = escaped.replace(
         /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g,
         '<a href="mailto:$1">$1</a>'
     );
 
-    // URLs with protocol or www
+    // Protocol-led URLs: http, https, tel, mailto (Skip existing tags)
     escaped = escaped.replace(
-        /\b((https?:\/\/|www\.)[^\s<]+)/gi,
-        match => {
-            let url = match;
-            if (!/^https?:\/\//i.test(url)) url = "http://" + url;
-            return `<a href="${url}" target="_blank" >${match}</a>`;
+        /(<a\b[^>]*>[\s\S]*?<\/a>)|\b((?:https?:\/\/|www\.|tel:|mailto:)[^\s<]+)/gi,
+        (match, anchor, url) => {
+            if (anchor) return anchor;
+            let href = url;
+            if (url.toLowerCase().startsWith('www.')) href = 'http://' + url;
+            return `<a href="${href}" target="_blank">${url}</a>`;
         }
     );
 
-    // Plain domains without protocol (skip emails) - Skip existing tags
+    // Plain domains and Localhost/IPs (Skip existing tags)
+    // Matches something.com or localhost:3000 or 127.0.0.1
     escaped = escaped.replace(
-        /(<a\b[^>]*>[\s\S]*?<\/a>)|\b((?!mailto:)([a-z0-9-]+\.)+[a-z]{2,}([\/\w\?\&\#.-]*)?)(?=\s|<br>|$)/gi,
+        /(<a\b[^>]*>[\s\S]*?<\/a>)|\b((?:localhost|(?:\d{1,3}\.){3}\d{1,3}|(?:[a-z0-9-]+\.)+[a-z]{2,})(?::\d+)?(?:[\/\w\?\&\#.-]*)?)(?=\s|<br>|$)/gi,
         (match, anchor, domain) => {
             if (anchor) return anchor;
-            if (/@/.test(domain)) return domain; // skip emails
-            return `<a href="http://${domain}" target="_blank" >${domain}</a>`;
+            if (/@/.test(domain)) return domain; // already handled by emails
+            return `<a href="http://${domain}" target="_blank">${domain}</a>`;
         }
     );
 
