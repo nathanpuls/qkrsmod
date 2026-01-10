@@ -227,33 +227,45 @@
     }
 
     // --- Shortcuts ---
-    function handleKeydown(e) {
+    function handleEditorKeydown(e) {
+        if (!isAutocompleteOpen) return;
+
         const key = e.key;
 
-        if (isAutocompleteOpen) {
-            if (key === "ArrowDown") {
-                e.preventDefault();
-                selectedIndex = (selectedIndex + 1) % filteredNotes.length;
-                return;
-            }
-            if (key === "ArrowUp") {
-                e.preventDefault();
-                selectedIndex =
-                    (selectedIndex - 1 + filteredNotes.length) %
-                    filteredNotes.length;
-                return;
-            }
-            if (key === "Enter" && filteredNotes.length > 0) {
-                e.preventDefault();
-                selectNote(filteredNotes[selectedIndex]);
-                return;
-            }
-            if (key === "Escape" || key === " ") {
-                isAutocompleteOpen = false;
-                // continue default behavior for escape/space
-            }
+        if (key === "ArrowDown") {
+            e.preventDefault();
+            e.stopPropagation();
+            selectedIndex = (selectedIndex + 1) % filteredNotes.length;
+            return;
         }
+        if (key === "ArrowUp") {
+            e.preventDefault();
+            e.stopPropagation();
+            selectedIndex =
+                (selectedIndex - 1 + filteredNotes.length) %
+                filteredNotes.length;
+            return;
+        }
+        if (key === "Enter" && filteredNotes.length > 0) {
+            e.preventDefault();
+            e.stopPropagation();
+            selectNote(filteredNotes[selectedIndex]);
+            return;
+        }
+        if (key === "Escape") {
+            e.preventDefault();
+            e.stopPropagation();
+            isAutocompleteOpen = false;
+            return;
+        }
+        // Let other keys (like Space) pass through but check for closing
+        if (key === " ") {
+            isAutocompleteOpen = false;
+        }
+    }
 
+    function handleKeydown(e) {
+        const key = e.key;
         const tag = document.activeElement.tagName;
 
         if (key.toLowerCase() === "escape") {
@@ -418,6 +430,7 @@
             bind:this={editorEl}
             bind:value={content}
             on:input={handleInput}
+            on:keydown={handleEditorKeydown}
             on:blur={() => {
                 // Switch to view mode on blur (e.g. mobile keyboard dismiss)
                 mode = "view";
