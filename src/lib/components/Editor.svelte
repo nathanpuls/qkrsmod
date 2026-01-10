@@ -511,7 +511,7 @@
         ><i class="ph-bold ph-qr-code"></i></button
     >
     <button
-        on:click={toggleMode}
+        on:mousedown|preventDefault={toggleMode}
         title={mode === "edit" ? "View (Esc)" : "Edit (E)"}
     >
         <i
