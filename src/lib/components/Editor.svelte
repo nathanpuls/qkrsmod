@@ -67,9 +67,11 @@
     });
 
     $: filteredNotes = allNoteNames
-        .filter((n) =>
-            n.toLowerCase().includes(autocompleteQuery.toLowerCase()),
-        )
+        .filter((n) => {
+            if (n.length > 80) return false; // Filter out accidental long keys
+            if (n.startsWith("%")) return false; // Filter out encoded junk
+            return n.toLowerCase().includes(autocompleteQuery.toLowerCase());
+        })
         .slice(0, 10);
 
     // Track slash trigger
