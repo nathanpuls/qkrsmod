@@ -79,12 +79,13 @@ export function formatTextForView(text) {
         }
     );
 
-    // Plain domains without protocol (skip emails)
+    // Plain domains without protocol (skip emails) - Skip existing tags
     escaped = escaped.replace(
-        /\b((?!mailto:)([a-z0-9-]+\.)+[a-z]{2,}([\/\w\?\&\#.-]*)?)(?=\s|<br>|$)/gi,
-        match => {
-            if (/@/.test(match)) return match; // skip emails
-            return `<a href="http://${match}" target="_blank" >${match}</a>`;
+        /(<a\b[^>]*>[\s\S]*?<\/a>)|\b((?!mailto:)([a-z0-9-]+\.)+[a-z]{2,}([\/\w\?\&\#.-]*)?)(?=\s|<br>|$)/gi,
+        (match, anchor, domain) => {
+            if (anchor) return anchor;
+            if (/@/.test(domain)) return domain; // skip emails
+            return `<a href="http://${domain}" target="_blank" >${domain}</a>`;
         }
     );
 
@@ -205,10 +206,13 @@ export function formatTextForView(text) {
         }
     );
 
-    // Phone numbers (basic)
+    // Phone numbers (basic) - Skip existing tags to avoid breaking URLs/IDs
     escaped = escaped.replace(
-        /(\+?\d[\d\s\-\(\)]{7,}\d)/g,
-        '<a href="tel:$1" >$1</a>'
+        /(<a\b[^>]*>[\s\S]*?<\/a>)|(\+?\d[\d\s\-\(\)]{7,}\d)/gi,
+        (match, anchor, phone) => {
+            if (anchor) return anchor;
+            return `<a href="tel:${phone}" >${phone}</a>`;
+        }
     );
 
     return escaped;
