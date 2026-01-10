@@ -68,10 +68,12 @@
     });
 
     $: filteredNotes = allNoteNames
+        .filter((n) => {
             if (n.length > 80) return false; // Filter out accidental long keys
             // Filter out junk chars: %, &, *, +, (, ), =, ?, $, !, <, >, {, }, [, ], ^, ~, |, \, /
-            if (/[%&*+()=?$!<>\{\}\[\]^~|\\\/]/.test(n)) return false; 
+            if (/[%&*+()=?$!<>\{\}\[\]^~|\\\/]/.test(n)) return false;
             return n.toLowerCase().includes(autocompleteQuery.toLowerCase());
+        })
         .slice(0, 7);
 
     // Track slash trigger
