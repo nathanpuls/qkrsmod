@@ -49,6 +49,9 @@ export function setupVariables(staticViewer, mode) {
             span.className = 'variable-placeholder';
             span.setAttribute('data-var', name);
             span.textContent = '…'; // loading indicator
+            // Styles for smooth fade-in
+            span.style.opacity = '0';
+            span.style.transition = 'opacity 0.3s ease';
             parts.push(span);
 
             // ensure we have a listener for this variable
@@ -172,6 +175,11 @@ function attachVariableListener(name, element) {
                 } else {
                     el.innerHTML = html;
                 }
+
+                // Fade in
+                requestAnimationFrame(() => {
+                    el.style.opacity = '1';
+                });
             });
         }, err => {
             console.error('[variables] error fetching', name, err);
