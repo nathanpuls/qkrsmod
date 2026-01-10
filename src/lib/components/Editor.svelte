@@ -1,6 +1,6 @@
 <script>
     import { onMount, tick, onDestroy } from "svelte";
-    import { listenToNote, saveNote } from "$lib/firebase";
+    import { getAllNoteNames, listenToNote, saveNote } from "$lib/firebase";
     import { formatTextForView } from "$lib/regex";
     import { setupVariableLinks } from "$lib/variablelinks";
     import { setupVariables, teardownVariables } from "$lib/variables";
@@ -21,6 +21,23 @@
     let searchQuery = "";
     let searchInputEl;
     let isQRModalOpen = false;
+
+    // Autocomplete State
+    let isAutocompleteOpen = false;
+    let autocompleteQuery = "";
+    let allNoteNames = [];
+    let selectedIndex = 0;
+
+    // Fetch names on mount
+    onMount(async () => {
+        allNoteNames = await getAllNoteNames();
+    });
+
+    $: filteredNotes = allNoteNames
+        .filter((n) =>
+            n.toLowerCase().includes(autocompleteQuery.toLowerCase()),
+        )
+        .slice(0, 10);
 
     // Load the note on initialization (the #key block handles path changes)
     loadNote(path);
@@ -92,6 +109,7 @@
         const currentPath = path; // Capture path at time of input
 
         autoResizeEditor();
+        checkSlashTrigger();
         clearTimeout(typingTimeout);
         typingTimeout = setTimeout(() => {
             // Guard: Only save if we are still on the same path where the typing happened.
@@ -121,13 +139,81 @@
         toggleMode();
     }
 
+    // Track slash trigger
+    function checkSlashTrigger() {
+        if (!editorEl) return;
+        const text = content.slice(0, editorEl.selectionStart);
+        const lastSlash = text.lastIndexOf("/");
+
+        if (
+            lastSlash !== -1 &&
+            (lastSlash === 0 ||
+                text[lastSlash - 1] === " " ||
+                text[lastSlash - 1] === "\n")
+        ) {
+            const query = text.slice(lastSlash + 1);
+            if (!query.includes(" ")) {
+                isAutocompleteOpen = true;
+                autocompleteQuery = query;
+                selectedIndex = 0;
+                return;
+            }
+        }
+        isAutocompleteOpen = false;
+    }
+
+    function selectNote(noteName) {
+        if (!editorEl) return;
+        const start = editorEl.selectionStart;
+        const textBefore = content.slice(0, start);
+        const lastSlash = textBefore.lastIndexOf("/");
+
+        const newContent =
+            content.slice(0, lastSlash + 1) + noteName + content.slice(start);
+        content = newContent;
+        isAutocompleteOpen = false;
+
+        tick().then(() => {
+            const nextPos = lastSlash + 1 + noteName.length;
+            editorEl.setSelectionRange(nextPos, nextPos);
+            editorEl.focus();
+            handleInput();
+        });
+    }
+
     // --- Shortcuts ---
     function handleKeydown(e) {
-        const key = e.key.toLowerCase();
+        const key = e.key;
+
+        if (isAutocompleteOpen) {
+            if (key === "ArrowDown") {
+                e.preventDefault();
+                selectedIndex = (selectedIndex + 1) % filteredNotes.length;
+                return;
+            }
+            if (key === "ArrowUp") {
+                e.preventDefault();
+                selectedIndex =
+                    (selectedIndex - 1 + filteredNotes.length) %
+                    filteredNotes.length;
+                return;
+            }
+            if (key === "Enter" && filteredNotes.length > 0) {
+                e.preventDefault();
+                selectNote(filteredNotes[selectedIndex]);
+                return;
+            }
+            if (key === "Escape" || key === " ") {
+                isAutocompleteOpen = false;
+                // continue default behavior for escape/space
+            }
+        }
+
         const tag = document.activeElement.tagName;
 
-        if (key === "escape") {
-            if (mode === "edit") {
+        if (key.toLowerCase() === "escape") {
+            if (mode === "edit" && !isAutocompleteOpen) {
+                // Only toggle mode if autocomplete isn't active
                 e.preventDefault();
                 toggleMode();
             }
@@ -293,6 +379,24 @@
             }}
             placeholder=""
         ></textarea>
+
+        {#if isAutocompleteOpen && filteredNotes.length > 0}
+            <div class="autocomplete-menu">
+                {#each filteredNotes as note, i}
+                    <!-- svelte-ignore a11y-click-events-have-key-events -->
+                    <div
+                        class="autocomplete-item"
+                        class:selected={i === selectedIndex}
+                        on:click={() => selectNote(note)}
+                        role="button"
+                        tabindex="0"
+                    >
+                        <i class="ph ph-file-text"></i>
+                        <span>{note}</span>
+                    </div>
+                {/each}
+            </div>
+        {/if}
     {/if}
 </div>
 
@@ -397,5 +501,59 @@
             width: 90%;
             max-width: 900px;
         }
+    }
+
+    /* Autocomplete Menu Styles */
+    .autocomplete-menu {
+        position: fixed;
+        bottom: 70px; /* Position above bottom bar */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 400px;
+        background: white;
+        border-radius: 12px;
+        box-shadow:
+            0 10px 25px rgba(0, 0, 0, 0.1),
+            0 2px 5px rgba(0, 0, 0, 0.05);
+        border: 1px solid #eee;
+        z-index: 1000;
+        overflow: hidden;
+        padding: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .autocomplete-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.15s;
+        font-size: 0.95rem;
+        color: #37352f; /* Notion text color */
+    }
+
+    .autocomplete-item i {
+        font-size: 1.1rem;
+        color: #999;
+    }
+
+    .autocomplete-item span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .autocomplete-item.selected,
+    .autocomplete-item:hover {
+        background: #f1f1ef; /* Notion item hover color */
+    }
+
+    .autocomplete-item:active {
+        background: #ebebe9;
     }
 </style>

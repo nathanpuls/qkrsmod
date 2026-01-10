@@ -51,3 +51,13 @@ export function saveNote(path, value) {
     });
   }
 }
+// Fetch all note names
+export async function getAllNoteNames() {
+  const notesRef = ref(db, 'notes');
+  const { get } from "firebase/database";
+  const snapshot = await get(notesRef);
+  if (snapshot.exists()) {
+    return Object.keys(snapshot.val());
+  }
+  return [];
+}
