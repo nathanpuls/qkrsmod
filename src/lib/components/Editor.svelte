@@ -60,6 +60,7 @@
     let selectedIndex = 0;
     let menuTop = 0;
     let menuLeft = 0;
+    let autocompleteMenuEl;
 
     // Fetch names on mount
     onMount(async () => {
@@ -72,7 +73,7 @@
             if (n.startsWith("%")) return false; // Filter out encoded junk
             return n.toLowerCase().includes(autocompleteQuery.toLowerCase());
         })
-        .slice(0, 10);
+        .slice(0, 5);
 
     // Track slash trigger
     function checkSlashTrigger() {
@@ -229,6 +230,21 @@
         if (e.ctrlKey || e.metaKey || e.altKey) return;
 
         toggleMode();
+    }
+
+    // Close autocomplete when clicking outside
+    function handleClickOutside(e) {
+        if (!isAutocompleteOpen) return;
+        if (!autocompleteMenuEl) return;
+        if (!editorEl) return;
+
+        // Check if click is outside both the menu and the editor
+        if (
+            !autocompleteMenuEl.contains(e.target) &&
+            !editorEl.contains(e.target)
+        ) {
+            isAutocompleteOpen = false;
+        }
     }
 
     // --- Shortcuts ---
@@ -392,7 +408,7 @@
     });
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} on:click={handleClickOutside} />
 
 <!-- Search -->
 {#if isSearchOpen}
@@ -445,22 +461,25 @@
 
         {#if isAutocompleteOpen && filteredNotes.length > 0}
             <div
+                bind:this={autocompleteMenuEl}
                 class="autocomplete-menu"
                 style="top: {menuTop}px; left: {menuLeft}px;"
             >
-                {#each filteredNotes as note, i}
-                    <!-- svelte-ignore a11y-click-events-have-key-events -->
-                    <div
-                        class="autocomplete-item"
-                        class:selected={i === selectedIndex}
-                        on:mousedown|preventDefault={() => selectNote(note)}
-                        role="button"
-                        tabindex="0"
-                    >
-                        <i class="ph ph-file-text"></i>
-                        <span>{note}</span>
-                    </div>
-                {/each}
+                <div class="autocomplete-items-container">
+                    {#each filteredNotes as note, i}
+                        <!-- svelte-ignore a11y-click-events-have-key-events -->
+                        <div
+                            class="autocomplete-item"
+                            class:selected={i === selectedIndex}
+                            on:mousedown|preventDefault={() => selectNote(note)}
+                            role="button"
+                            tabindex="0"
+                        >
+                            <i class="ph ph-file-text"></i>
+                            <span>{note}</span>
+                        </div>
+                    {/each}
+                </div>
             </div>
         {/if}
     {/if}
@@ -584,6 +603,12 @@
         z-index: 1000;
         overflow: hidden;
         padding: 6px;
+    }
+
+    .autocomplete-items-container {
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden;
         display: flex;
         flex-direction: column;
         gap: 2px;
