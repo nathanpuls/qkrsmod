@@ -75,7 +75,12 @@ export function formatTextForView(text) {
         (match, anchor, url) => {
             if (anchor) return anchor;
             let href = url;
-            if (url.toLowerCase().startsWith('www.')) href = 'http://' + url;
+            if (url.toLowerCase().startsWith('www.')) {
+                href = 'http://' + url;
+            } else if (url.toLowerCase().startsWith('tel:')) {
+                // Ensure tel: links are cleaned for the href
+                href = 'tel:' + url.slice(4).replace(/[^\d+]/g, '');
+            }
             return `<a href="${href}" target="_blank">${url}</a>`;
         }
     );
@@ -208,12 +213,13 @@ export function formatTextForView(text) {
         }
     );
 
-    // Phone numbers (basic) - Skip existing tags to avoid breaking URLs/IDs
+    // Phone numbers (International and US) - Skip existing tags
     escaped = escaped.replace(
-        /(<a\b[^>]*>[\s\S]*?<\/a>)|(\+?\d[\d\s\-\(\)]{7,}\d)/gi,
+        /(<a\b[^>]*>[\s\S]*?<\/a>)|((?:\+|00)\d[\d\s\-\(\).]{7,}\d|\(?\d{3}\)?[\s\-\.]\d{3}[\s\-\.]\d{4})/gi,
         (match, anchor, phone) => {
             if (anchor) return anchor;
-            return `<a href="tel:${phone}" >${phone}</a>`;
+            const cleanPhone = phone.replace(/[^\d+]/g, '');
+            return `<a href="tel:${cleanPhone}">${phone}</a>`;
         }
     );
 
